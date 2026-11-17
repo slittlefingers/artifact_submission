@@ -21,6 +21,9 @@ python kvidence.py experiment 5.3
 python kvidence.py experiment 5.4
 # 5.5: three text-search methods on Gemma and Qwen (phone NPU).
 python kvidence.py experiment 5.5
+python kvidence.py experiment 5.5 --dataset base64
+# Both datasets, all three methods; add --model qwen or --model gemma to select a model.
+python kvidence.py experiment 5.5 --dataset all --full
 # 5.6: multimodal conversation recovery (phone NPU).
 python kvidence.py experiment 5.6-gemma
 python kvidence.py experiment 5.6-qwen

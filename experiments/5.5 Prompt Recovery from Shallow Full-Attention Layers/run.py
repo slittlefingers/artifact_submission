@@ -16,9 +16,9 @@ MODELS = {'gemma': 'gemma-4-E2B-it_Google_Tensor_G5.litertlm', 'qwen': 'qwen3_5_
 CLI = ROOT / 'reconstruction/run.py'
 
 
-def score(config, folder):
-    
-    labels = (HERE / read(config)['input_manifest']).resolve().parent.parent / 'evaluation'
+def score(manifest, folder):
+
+    labels = manifest.parent.parent / 'evaluation'
     recovered = correct = queries = 0
     for result_path in sorted(folder.glob('recovery/*/*/result.json')):
         result = read(result_path)
@@ -31,25 +31,31 @@ def score(config, folder):
 
 def main():
     p = parser(__doc__)
+    p.add_argument('--dataset', choices=['lmsys', 'base64', 'all'], default='lmsys', help='Dataset to recover (default: lmsys)')
+    p.add_argument('--prompts', type=int, default=100, help='Prompts per dataset with --full (default: 100)')
     p.add_argument('--model', choices=sorted(MODELS), help='Run only this model')
     p.add_argument('--positions', type=int, default=1, help='Recovered tokens per prompt in the demo')
     args = p.parse_args()
+    if args.prompts < 1 or args.positions < 1:
+        p.error('--prompts and --positions must be positive')
+    datasets = ['lmsys', 'base64'] if args.dataset == 'all' else [args.dataset]
     runs = [r for r in RUNS if args.model in (None, r[0])]
     require_phone(*{MODELS[r[0]] for r in runs})
     out = output_root('5.5', args)
     rows, passed = [], True
-    for model, method, name in runs:
-        config, folder = HERE / name, out / Path(name).stem
-        limits = [] if args.full else ['--limit', 1, '--positions', args.positions]
-        code = run(python(CLI, 'run-json', '--config', config, '--output', folder, *limits), out / f'{Path(name).stem}.log')
-        recovered, correct, queries = score(config, folder) if not code else (0, 0, 0)
-        ok = not code and recovered > 0 and correct == recovered
-        passed &= ok
-        rows.append((model, method, recovered, percent(correct, recovered), f'{queries / recovered:.1f}' if recovered else '-',
-                     'ok' if ok else 'FAILED'))
-    table(('Model', 'Method', 'Tokens', 'Accuracy', 'Queries/token', 'Status'), rows)
-    print('Paper (100 LMSYS prompts): 100% accuracy for every method; KVidence needs about 131-135 queries/token, '
-          'Collision+ Modified 1,668 (Gemma) and 1,943 (Qwen).')
+    for dataset in datasets:
+        for model, method, name in runs:
+            manifest = ROOT / 'assets/kv/5.5' / f'{model}_{dataset}' / 'observations/index.json'
+            config, folder = HERE / name, out / dataset / Path(name).stem
+            limits = ['--limit', args.prompts] if args.full else ['--limit', 1, '--positions', args.positions]
+            code = run(python(CLI, 'run-json', '--config', config, '--input-manifest', manifest,
+                              '--output', folder, *limits), out / dataset / f'{Path(name).stem}.log')
+            recovered, correct, queries = score(manifest, folder) if not code else (0, 0, 0)
+            ok = not code and recovered > 0 and correct == recovered
+            passed &= ok
+            rows.append((dataset, model, method, recovered, percent(correct, recovered),
+                         f'{queries / recovered:.1f}' if recovered else '-', 'ok' if ok else 'FAILED'))
+    table(('Dataset', 'Model', 'Method', 'Tokens', 'Accuracy', 'Queries/token', 'Status'), rows)
     return finish('5.5', passed, out)
 
 

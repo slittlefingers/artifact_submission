@@ -7,6 +7,9 @@ python kvidence.py experiment 5.2
 python kvidence.py experiment 5.3
 python kvidence.py experiment 5.4
 python kvidence.py experiment 5.5
+python kvidence.py experiment 5.5 --dataset base64
+# Both datasets, all three methods; add --model qwen or --model gemma to select a model.
+python kvidence.py experiment 5.5 --dataset all --full
 python kvidence.py experiment 5.6-gemma
 python kvidence.py experiment 5.6-gemma --positions 270
 python kvidence.py experiment 5.6-gemma --start 36 --positions 136

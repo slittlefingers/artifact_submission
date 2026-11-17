@@ -29,8 +29,9 @@ class QueryLog:
         np.savez_compressed(self.folder/f'p{position:04d}_q{n:04d}.npz',token_ids=np.asarray(ids,dtype=np.int32),k=result[:,:k],v=result[:,k:],target_k=target[:k],target_v=target[k:],v_rmse_lsb=np.sqrt(np.mean((result[:,k:].astype(np.float64)-target[None,k:].astype(np.float64))**2,axis=1)),query_seconds=seconds)
         return result
 
-def run_job(path,limit=None,max_positions=None,output=None):
+def run_job(path,limit=None,max_positions=None,output=None,input_manifest=None):
     job=load_job(path);output=Path(output).resolve() if output else job['output'];output.mkdir(parents=True,exist_ok=True)
+    if input_manifest is not None:job['input_manifest']=Path(input_manifest).resolve()
                                                                                     
     import sys,os
     def guard(event,args):
@@ -53,6 +54,9 @@ def run_job(path,limit=None,max_positions=None,output=None):
         protocol['reference']=dict(table=str(reference.path),metadata_sha256=digest(reference.path/'metadata.json'),
             metric='V-only squared distance; initialization for guided_kv, full ranking for v_nearest, repeated masked selection for v_probability; real K/V gate unchanged',identity=reference.metadata['identity'])
     previous=output/'protocol.json'
+    protocol['input_manifest']=str(job['input_manifest'])
+    if previous.exists() and json.loads(previous.read_text(encoding='utf-8')).get('input_manifest_sha256')!=protocol['input_manifest_sha256']:
+        raise ValueError('Dataset changed; choose a new output directory')
     if previous.exists() and json.loads(previous.read_text(encoding='utf-8'))['job_config_sha256']!=protocol['job_config_sha256']:raise ValueError('Configuration changed; choose a new output directory')
     dump(previous,protocol)
     from .torch_surrogate import TorchRidge

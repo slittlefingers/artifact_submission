@@ -343,6 +343,7 @@ def build_parser():
     job.add_argument('--limit',type=int,help='Pilot sample count; omitted runs the complete input manifest')
     job.add_argument('--positions',type=int,help='Pilot position count per sample; omitted recovers every target position')
     job.add_argument('--output',type=Path,help='Output directory; overrides the configured output')
+    job.add_argument('--input-manifest',type=Path,help='Observation manifest; overrides the configured dataset')
     assets=sub.add_parser('prepare-assets',help='Create missing tokenizer/embeddings from the configured LiteRT-LM bundle (needs ai-edge-litert)')
     pick=assets.add_mutually_exclusive_group()
     pick.add_argument('--model-name',choices=tuple(MODEL_CONFIGS),help='Default: every registered model')
@@ -454,7 +455,7 @@ def main():
         from .json_job import run_job
         if args.limit is not None and args.limit<1:raise ValueError('limit must be positive')
         if args.positions is not None and args.positions<1:raise ValueError('positions must be positive')
-        return run_job(args.config,args.limit,args.positions,args.output)
+        return run_job(args.config,args.limit,args.positions,args.output,input_manifest=args.input_manifest)
     resolve_search_defaults(args)
     if args.command=="evaluate-comparison":
         from .comparison import evaluate_comparison
