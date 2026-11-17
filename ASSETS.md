@@ -1,12 +1,5 @@
-Download assets from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission) into this repository root:
+Download datasets and models from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission). Preserve the directory layout below:
 
-```sh
-python -m pip install -U huggingface_hub
-hf download Floooding/artifact_submission --repo-type dataset --local-dir . --exclude README.md
-python -c "from pathlib import Path; from zipfile import ZipFile; [ZipFile(p).extractall('.') for p in sorted(Path('packages').glob('*.zip'))]"
-```
-
-Keep `assets/*.zip` compressed; experiment loaders read them directly. Preserve this layout:
 
 ```text
 assets/*.zip                   Dataset and Gemma reconstructor packages
