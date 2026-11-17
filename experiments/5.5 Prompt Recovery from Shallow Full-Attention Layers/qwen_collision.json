@@ -18,7 +18,7 @@
     "install": false,
     "native_mode": "optimized_v2",
     "qwen_recovery": true,
-    "qwen_query_mode": "exact_prefill"
+    "qwen_query_mode": "verify"
   },
   "metadata": {
     "public_prefix": "<|im_start|>user\n",
@@ -46,7 +46,7 @@
     "methods": [
       "collision_plus_modified"
     ],
-    "epsilon": 1e-06,
+    "epsilon": 0.125,
     "distance_space": "original",
     "distance_metric": "rmse",
     "batch_size": 128,
