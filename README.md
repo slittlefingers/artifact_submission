@@ -1,4 +1,4 @@
-Run from the repository root. Model files, recorded datasets, and reference tables are supplied separately; place them at the paths in `ASSETS.md` before running the experiments.
+Run from the repository root. Download datasets, K/V caches, reference tables, and models from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission). See `ASSETS.md` for download and extraction commands.
 
 ```sh
 python -m pip install -r requirements.txt
