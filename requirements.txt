@@ -1,5 +1,7 @@
 numpy>=2.0
 scipy>=1.13
+# Gemma/Qwen GPU-assisted experiments require an NVIDIA GPU and CUDA-enabled PyTorch.
+# Install the matching PyTorch build from https://pytorch.org/get-started/locally/ first.
 torch>=2.4
 tokenizers>=0.20
 sentencepiece>=0.2
@@ -8,5 +10,6 @@ ai-edge-litert>=2.0
 Pillow>=10
 pytest>=8
 matplotlib>=3.8
-# Volatility 3 with AArch64 support is additionally required for real dumps.
+-r extraction/tools/volatility3-arm64/requirements-minimal.txt
+# ARM64 Volatility is bundled under extraction/tools/volatility3-arm64/.
 # Collection and native replay additionally require Android SDK/NDK and LiteRT-LM.
