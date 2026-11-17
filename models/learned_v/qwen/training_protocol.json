@@ -1,0 +1,18 @@
+{
+  "model": "Qwen 3.5 2B VL / Tensor G5",
+  "model_sha256": "9ec3ff7dcc6218cdf9356d4e4a64bcbf4af0e23cb519ac7c058c22701721984f",
+  "layer": 3,
+  "signature": "prefill_128",
+  "dataset_sha256": "d96d20cee0488d1422d576fbd40763aae0047cb3316b055f4f9b60dfcadcb811",
+  "tokenizer_sha256": "a5cd9732badce41de57e6efce8302930ded1c1188c5f81feb2bd6c24c4a1941f",
+  "generated_tokens": 0,
+  "independent_sessions": true,
+  "capture": "Reset all states, causal prefill once, keep all valid positions including template. No candidate replay or decoding.",
+  "labels": "Token IDs are supervised training targets, not passed to recovery evaluations.",
+  "train_samples": 9000,
+  "validation_samples": 1000,
+  "test_overlap_conversations": 0,
+  "test_overlap_normalized_prompts": 0,
+  "rest_every_samples": 1000,
+  "rest_seconds": 60
+}

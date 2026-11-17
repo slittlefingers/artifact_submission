@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "model": {
+    "name": "Gemma 4 E2B / Tensor G5",
+    "sha256": "af1082986639ecde7db95d91be6fe54f8b6b458104734c5bafc204e69d6852dc",
+    "layer": 4,
+    "manifest": "../../reconstruction/configs/gemma4_e2b_sections.json",
+    "tokenizer": "../../models/tokenizers/gemma4_e2b/tokenizer.json",
+    "embeddings": "../../models/derived/gemma4_e2b/embeddings.npy",
+    "device_model": "/sdcard/Android/data/com.example.annoymous/files/gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+    "batch_signature": "prefill_128",
+    "mask_token_id": 1437
+  },
+  "device": {
+    "adb": "adb",
+    "serial": null,
+    "package": "com.example.annoymous",
+    "install": false,
+    "native_mode": "optimized_v2"
+  },
+  "metadata": {
+    "public_prefix": "<bos><|turn>user\n",
+    "markers": {
+      "image": {
+        "start": "<|image>",
+        "end": "<image|>"
+      },
+      "user": {
+        "start": "<|turn>user\n",
+        "end": "<turn|>"
+      },
+      "assistant": {
+        "start": "<|turn>model\n",
+        "end": [
+          "<turn|>",
+          "<eos>"
+        ]
+      },
+      "system": {
+        "start": "<|turn>system\n",
+        "end": "<turn|>"
+      }
+    },
+    "stop_before": [
+      "assistant.start"
+    ]
+  },
+  "search": {
+    "methods": [
+      "guided_kv"
+    ],
+    "epsilon": 0.125,
+    "distance_space": "lsb",
+    "distance_metric": "rmse",
+    "batch_size": 128,
+    "probability_seeds": 0,
+    "random_seeds": 0,
+    "proposals": 128,
+    "seed": 20261103,
+    "max_queries": null,
+    "merge_initial_batch": true,
+    "reference_seeds": 128,
+    "retain_query_cache": true
+  },
+  "ridge": {
+    "max_anchors": 512,
+    "lambda_per_anchor": 0.01,
+    "score_chunk_size": 8192
+  },
+  "input_manifest": "../../assets/kv/5.5/gemma_lmsys/observations/index.json",
+  "output": "../../outputs/5.5/gemma_learned",
+  "learned_candidates": {
+    "checkpoint": "../../models/learned_v/gemma/best.pt",
+    "quantization": "../../models/learned_v/gemma/quantization.json",
+    "model": "gemma",
+    "mode": "v",
+    "training_protocol": "../../models/learned_v/gemma/training_protocol.json",
+    "device": "cuda"
+  }
+}

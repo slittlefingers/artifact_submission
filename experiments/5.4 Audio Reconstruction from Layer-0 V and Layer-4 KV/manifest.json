@@ -1,0 +1,13 @@
+{
+  "paper_section": "5.4 Audio Reconstruction from Layer-0 V and Layer-4 KV",
+  "source_directories": [
+    "reconstruction/components/experiment3_audio"
+  ],
+  "entry_points": [
+    "reconstruction/components/experiment3_audio/audio_recovery/evaluate_token_duration.py",
+    "reconstruction/components/experiment3_audio/plot_audio_layers.py"
+  ],
+  "datasets_and_checkpoints": "External assets; see ASSETS.md",
+  "status": "Section entry map; shared source layout retained. Configure external assets before running.",
+  "input_policy": "Use retained experimental KV assets or verified kvextract imports; preserve actual provenance."
+}

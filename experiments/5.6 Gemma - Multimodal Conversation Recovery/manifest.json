@@ -1,0 +1,15 @@
+{
+  "paper_section": "5.6 Gemma - Multimodal Conversation Recovery",
+  "source_directories": [
+    "reconstruction/components/experiment9",
+    "reconstruction/components/experiment2_image_layer4",
+    "reconstruction/components/experiment3_audio"
+  ],
+  "entry_points": [
+    "reconstruction/components/experiment9/run.py",
+    "reconstruction/components/experiment9/evaluate.py"
+  ],
+  "datasets_and_checkpoints": "External assets; see ASSETS.md",
+  "status": "Section entry map; shared source layout retained. Configure external assets before running.",
+  "input_policy": "Use retained experimental KV assets or verified kvextract imports; preserve actual provenance."
+}

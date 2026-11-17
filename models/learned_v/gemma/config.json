@@ -1,0 +1,22 @@
+{
+  "model": "gemma",
+  "mode": "v",
+  "layer_index": 4,
+  "architecture": "MLP input->512 GELU->512 GELU->full model vocabulary; independent per position",
+  "parameters": 134743040,
+  "batch_tokens": 256,
+  "max_epochs": 20,
+  "early_stop": "dev body token accuracy patience5, minimum6epochs",
+  "lr": 0.0003,
+  "seed": 20261105,
+  "train_tokens": 416587,
+  "splits": {
+    "train": 8500,
+    "dev": 500,
+    "heldout": 1000
+  },
+  "input": "only selected single-position vector; no token IDs, position, body mask or other KV vectors are network inputs",
+  "normalization": "same model quantization and train-only statistics method as causal baseline",
+  "loss": "CE all valid tokens, selection and main evaluation on user body",
+  "scores": "softmax not calibrated correctness probability"
+}

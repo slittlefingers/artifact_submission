@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "model_sha256": "af1082986639ecde7db95d91be6fe54f8b6b458104734c5bafc204e69d6852dc",
+  "manifest_sha256": "2f6026aca607f85c48252db1a6889cbb4c1448972c91d93bc2883db7a6c0b236",
+  "adapter": "litert_tensor_gemma_npu",
+  "batch_signature": "prefill_128",
+  "token_ids_sha256": "aed54e23940f33681343dd89d6823c5f33f5948cf4feb9a2c664815f3462a2a1",
+  "complete": true,
+  "spec": {
+    "layer": 0,
+    "quantization": [
+      {
+        "width": 256,
+        "scale": 0.005997600965201855,
+        "zero_point": 0,
+        "dtype": "int8"
+      },
+      {
+        "width": 256,
+        "scale": 0.047244105488061905,
+        "zero_point": 0,
+        "dtype": "int8"
+      }
+    ],
+    "prefix": [
+      2
+    ],
+    "context_independent_by_architecture": true,
+    "scope": "Gemma 4 E2B layer-0 text V; native measured candidate outputs before contextual attention"
+  },
+  "vocab_size": 262144,
+  "rows": 262144,
+  "full_vocabulary": true,
+  "quantization": [
+    {
+      "width": 256,
+      "scale": 0.047244105488061905,
+      "zero_point": 0,
+      "dtype": "int8"
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "sample_ids": [
+      0,
+      37449,
+      74898,
+      112347,
+      149796,
+      187245,
+      224694,
+      262143
+    ],
+    "checks": [
+      {
+        "prefix": [],
+        "maximum_absolute_error": 0.0
+      },
+      {
+        "prefix": [
+          2
+        ],
+        "maximum_absolute_error": 0.0
+      },
+      {
+        "prefix": [
+          2,
+          262143
+        ],
+        "maximum_absolute_error": 0.0
+      },
+      {
+        "prefix": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "maximum_absolute_error": 0.0
+      }
+    ],
+    "note": "Finite check, not proof of all-prefix numeric equivalence"
+  },
+  "codes_sha256": "e72b906fe654268abd712b7d8d45210c809384e7f9b3720bb3c3445bc7f484d1",
+  "ids_sha256": "9e79de7f4c9f874723c3b31238f3ef12bf3ffcfc94705ecdfba69c3fa425f5eb"
+}

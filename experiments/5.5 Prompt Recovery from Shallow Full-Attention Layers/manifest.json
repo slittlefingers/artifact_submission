@@ -1,0 +1,23 @@
+{
+  "paper_section": "5.5 Prompt Recovery from Shallow Full-Attention Layers",
+  "source_directories": [
+    "reconstruction/components/experiment5_gemma_layer4_multimodal",
+    "reconstruction/components/experiment5_token_training",
+    "reconstruction",
+    "reconstruction/kvrecon/adapters/qwen_verify"
+  ],
+  "entry_points": [
+    "reconstruction/run.py"
+  ],
+  "datasets_and_checkpoints": "External assets; see ASSETS.md",
+  "status": "Section entry map; shared source layout retained. Configure external assets before running.",
+  "input_policy": "Use retained experimental KV assets or verified kvextract imports; preserve actual provenance.",
+  "configs": [
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/gemma.json",
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/gemma_learned.json",
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/gemma_collision.json",
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/qwen.json",
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/qwen_learned.json",
+    "experiments/5.5 Prompt Recovery from Shallow Full-Attention Layers/qwen_collision.json"
+  ]
+}

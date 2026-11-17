@@ -1,0 +1,19 @@
+{
+  "mode": "kv",
+  "input_dim": 1024,
+  "layer_index": 3,
+  "optimizer": "preserve AdamW moments; restart LR at1e-5",
+  "architecture": "unchanged native-grid single causal4096 Transformer+MLP+UNet",
+  "loss": "image pixel MSE336, resize after native RGB rendering",
+  "counts": {
+    "train": 8270,
+    "val": 860
+  },
+  "batch": 3,
+  "seed": 20261025,
+  "warmup_steps": 100,
+  "lr": 1e-05,
+  "stop": "at least6 additional epochs; no >=0.2% relative validation MSE improvement for6 epochs AND LR<=1.25e-6; no fixed epoch cap",
+  "selection": "lowest validation MSE; test not read or used",
+  "normalization": "same FP32 inputs and train-only statistics as original3epochs"
+}

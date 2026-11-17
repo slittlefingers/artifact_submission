@@ -1,0 +1,22 @@
+[
+  {
+    "component": "btf2json",
+    "origin": "https://github.com/eurecom-s3/lemon-btf2json",
+    "snapshot": "Local experiment source snapshot, not a fresh upstream checkout",
+    "license": "tools/btf2json/LICENSE.md"
+  },
+  {
+    "component": "volatility3-arm64",
+    "origin": "https://github.com/eurecom-s3/volatility3-arm64",
+    "snapshot": "Local experiment source snapshot, not a fresh upstream checkout",
+    "license": "tools/volatility3-arm64/LICENSE.txt"
+  },
+  {
+    "component": "integration-validation",
+    "volatility_version": "2.10.0",
+    "plugin_discovery": "kv_extract.KvExtract discovered with bundled framework",
+    "schemas": "BTF/symdb accepted in 6.2.0; 6.3.0 aligned in release copy",
+    "btf2json_build": "not rebuilt in packaging pass",
+    "new_dump_end_to_end": "not run"
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "width": 512,
+    "scale": 1.0,
+    "zero_point": 0,
+    "dtype": "float32"
+  },
+  {
+    "width": 512,
+    "scale": 1.0,
+    "zero_point": 0,
+    "dtype": "float32"
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "model": {
+    "name": "Gemma 4 E2B / Tensor G5",
+    "sha256": "af1082986639ecde7db95d91be6fe54f8b6b458104734c5bafc204e69d6852dc",
+    "layer": 4,
+    "manifest": "../../../configs/gemma4_e2b_inspection.json",
+    "tokenizer": "../../../../models/tokenizers/gemma4_e2b/tokenizer.json",
+    "embeddings": "../../../../models/derived/gemma4_e2b/embeddings.npy",
+    "device_model": "/data/user/0/com.example.annoymous.qwenpreview/files/gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+    "batch_signature": "prefill_128",
+    "mask_token_id": 1437
+  },
+  "device": {
+    "adb": "adb",
+    "serial": "ANONYMIZED",
+    "package": "com.example.annoymous.qwenpreview",
+    "install": true,
+    "native_mode": "optimized_v2"
+  },
+  "metadata": {
+    "public_prefix": "<bos><|turn>user\n",
+    "markers": {
+      "image": {
+        "start": "<|image>",
+        "end": "<image|>"
+      },
+      "user": {
+        "start": "<|turn>user\n",
+        "end": "<turn|>"
+      },
+      "assistant": {
+        "start": "<|turn>model\n",
+        "end": [
+          "<turn|>",
+          "<eos>"
+        ]
+      },
+      "system": {
+        "start": "<|turn>system\n",
+        "end": "<turn|>"
+      }
+    },
+    "stop_before": [
+      "image.start",
+      "assistant.start"
+    ]
+  },
+  "search": {
+    "methods": [
+      "guided",
+      "collision_plus"
+    ],
+    "epsilon": 0.125,
+    "distance_space": "lsb",
+    "distance_metric": "rmse",
+    "batch_size": 128,
+    "probability_seeds": 50,
+    "random_seeds": 150,
+    "proposals": 20,
+    "seed": 20261103,
+    "max_queries": null
+  },
+  "ridge": {
+    "max_anchors": 512,
+    "lambda_per_anchor": 0.01,
+    "score_chunk_size": 8192
+  },
+  "input_manifest": "../text_prefix_layer4/observations/index.json",
+  "output": "../text_prefix_layer4/paired_full"
+}

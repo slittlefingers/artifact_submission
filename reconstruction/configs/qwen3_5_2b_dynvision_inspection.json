@@ -1,0 +1,4139 @@
+{
+  "model_file": "models/litertlm/qwen3_5_2b_vl_Google_Tensor_G5_dynvision.litertlm",
+  "model_sha256": "4db9a884370528dd72314ea87112b08b2e1c675e288eaa5dd1db3d5baa8c0670",
+  "sha256": "4db9a884370528dd72314ea87112b08b2e1c675e288eaa5dd1db3d5baa8c0670",
+  "size": 5547689904,
+  "model_sections": {
+    "tf_lite_prefill_decode": {
+      "offset": 3948544,
+      "length": 4672289328,
+      "signatures": {
+        "prefill_8": {
+          "index": 0,
+          "inputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                8,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "input_pos",
+              "shape": [
+                8
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "mask",
+              "shape": [
+                1,
+                1,
+                8,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "rope_pos",
+              "shape": [
+                3,
+                8
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "prefill_128": {
+          "index": 1,
+          "inputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                128,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "input_pos",
+              "shape": [
+                128
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "mask",
+              "shape": [
+                1,
+                1,
+                128,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "rope_pos",
+              "shape": [
+                3,
+                128
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "decode": {
+          "index": 2,
+          "inputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                1,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "input_pos",
+              "shape": [
+                1
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "mask",
+              "shape": [
+                1,
+                1,
+                1,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "rope_pos",
+              "shape": [
+                3,
+                1
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "kv_cache_c_0",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_0",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_1",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_1",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_2",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_2",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_3",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_3",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_4",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_4",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_5",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_5",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_6",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_6",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_7",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_7",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_8",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_8",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_9",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_9",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_10",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_10",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_11",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_11",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_12",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_12",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_13",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_13",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_14",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_14",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_15",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_15",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_16",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_16",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_17",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_17",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_18",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_18",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_19",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_19",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_20",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_20",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_21",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_21",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_c_22",
+              "shape": [
+                1,
+                6144,
+                3
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_r_22",
+              "shape": [
+                1,
+                16,
+                128,
+                128
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_k_23",
+              "shape": [
+                1,
+                2,
+                2048,
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "kv_cache_v_23",
+              "shape": [
+                1,
+                2,
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "logits",
+              "shape": [
+                1,
+                1,
+                248320
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        }
+      }
+    },
+    "tf_lite_embedder": {
+      "offset": 4676239360,
+      "length": 517504688,
+      "signatures": {
+        "decode_embedder": {
+          "index": 0,
+          "inputs": [
+            {
+              "name": "token_ids",
+              "shape": [
+                1,
+                1
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                1,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "prefill_embedder_8": {
+          "index": 1,
+          "inputs": [
+            {
+              "name": "token_ids",
+              "shape": [
+                1,
+                8
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                8,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "prefill_embedder_32": {
+          "index": 2,
+          "inputs": [
+            {
+              "name": "token_ids",
+              "shape": [
+                1,
+                32
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "embeddings",
+              "shape": [
+                1,
+                32,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        }
+      }
+    },
+    "tf_lite_vision_encoder": {
+      "offset": 5193744384,
+      "length": 353945520,
+      "signatures": {
+        "vision_encoder_256": {
+          "index": 0,
+          "inputs": [
+            {
+              "name": "patches",
+              "shape": [
+                256,
+                1536
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_idx",
+              "shape": [
+                256,
+                4
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_w",
+              "shape": [
+                256,
+                4
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "positions",
+              "shape": [
+                256,
+                2
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "valid",
+              "shape": [
+                256
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output_0",
+              "shape": [
+                64,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "vision_encoder_576": {
+          "index": 1,
+          "inputs": [
+            {
+              "name": "patches",
+              "shape": [
+                576,
+                1536
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_idx",
+              "shape": [
+                576,
+                4
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_w",
+              "shape": [
+                576,
+                4
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "positions",
+              "shape": [
+                576,
+                2
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "valid",
+              "shape": [
+                576
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output_0",
+              "shape": [
+                144,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        },
+        "vision_encoder_1024": {
+          "index": 2,
+          "inputs": [
+            {
+              "name": "patches",
+              "shape": [
+                1024,
+                1536
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_idx",
+              "shape": [
+                1024,
+                4
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "pos_w",
+              "shape": [
+                1024,
+                4
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "positions",
+              "shape": [
+                1024,
+                2
+              ],
+              "shape_signature": [],
+              "type": 2,
+              "scale": [],
+              "zero_point": []
+            },
+            {
+              "name": "valid",
+              "shape": [
+                1024
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ],
+          "outputs": [
+            {
+              "name": "output_0",
+              "shape": [
+                256,
+                2048
+              ],
+              "shape_signature": [],
+              "type": 0,
+              "scale": [],
+              "zero_point": []
+            }
+          ]
+        }
+      }
+    }
+  }
+}

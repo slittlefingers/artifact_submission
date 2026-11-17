@@ -1,0 +1,18 @@
+{
+  "model": "Gemma 4 E2B / Tensor G5",
+  "model_sha256": "af1082986639ecde7db95d91be6fe54f8b6b458104734c5bafc204e69d6852dc",
+  "layer": 4,
+  "signature": "prefill_128",
+  "dataset_sha256": "d96d20cee0488d1422d576fbd40763aae0047cb3316b055f4f9b60dfcadcb811",
+  "tokenizer_sha256": "cc8d3a0ce36466ccc1278bf987df5f71db1719b9ca6b4118264f45cb627bfe0f",
+  "generated_tokens": 0,
+  "independent_sessions": true,
+  "capture": "Reset all states, causal prefill once, keep all valid positions including template. No candidate replay or decoding.",
+  "labels": "Token IDs are supervised training targets, not passed to recovery evaluations.",
+  "train_samples": 9000,
+  "validation_samples": 1000,
+  "test_overlap_conversations": 0,
+  "test_overlap_normalized_prompts": 0,
+  "rest_every_samples": 1000,
+  "rest_seconds": 60
+}

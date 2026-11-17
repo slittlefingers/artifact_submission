@@ -1,0 +1,20 @@
+{
+  "name": "Qwen 3.5 2B VL / Tensor G5 (verify_64)",
+  "model": "../../models/litertlm/qwen3_5_2b_vl_spec_Google_Tensor_G5.litertlm",
+  "device_model": "/sdcard/Android/data/com.example.annoymous/files/qwen3_5_2b_vl_spec_Google_Tensor_G5.litertlm",
+  "manifest": "qwen3_5_2b_inspection.json",
+  "tokenizer": "../../models/derived/qwen3_5_2b/tokenizer.json",
+  "embeddings": "../../models/derived/qwen3_5_2b/embeddings.npy",
+  "vocabulary": null,
+  "batch_signature": "prefill_128",
+  "mask_token_id": 0,
+  "default_layer": 3,
+  "adapter": "litert_qwen_verify",
+  "adapter_options": {
+    "worker": "../kvrecon/adapters/qwen_verify/qwen_verify_worker",
+    "package": "com.example.annoymous",
+    "query_mode": "verify"
+  },
+  "first_v_table": null,
+  "media": {}
+}

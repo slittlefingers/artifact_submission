@@ -1,0 +1,13 @@
+{
+  "paper_section": "5.2 Layer-0 V Text Token Reproducibility",
+  "source_directories": [
+    "reconstruction/components/experiment1_layer0"
+  ],
+  "entry_points": [
+    "reconstruction/components/experiment1_layer0/evaluate_generic_vocabulary.py",
+    "reconstruction/components/experiment1_layer0/plot_v_distances.py"
+  ],
+  "datasets_and_checkpoints": "External assets; see ASSETS.md",
+  "status": "Section entry map; shared source layout retained. Configure external assets before running.",
+  "input_policy": "Use retained experimental KV assets or verified kvextract imports; preserve actual provenance."
+}

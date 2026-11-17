@@ -1,0 +1,6 @@
+numpy>=2.0
+scipy>=1.13
+# Guided mode additionally reuses the existing experiment environment's torch
+# and mlx packages. CPA threshold optimization additionally uses SciPy.
+# Text decoding needs tokenizers. `run.py prepare-assets` additionally needs
+# ai-edge-litert (bundled embedder), sentencepiece and protobuf (tokenizer ID check).

@@ -1,0 +1,17 @@
+{
+  "name": "Gemma 4 E2B IT / Tensor G5",
+  "model": "../../models/litertlm/gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+  "device_model": "/sdcard/Android/data/com.example.annoymous/files/gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+  "manifest": "gemma4_e2b_inspection.json",
+  "tokenizer": "../../models/tokenizers/gemma4_e2b/tokenizer.json",
+  "embeddings": "../../models/derived/gemma4_e2b/embeddings.npy",
+  "batch_signature": "prefill_128",
+  "mask_token_id": 1437,
+  "vocabulary": null,
+  "adapter": "litert_tensor_gemma",
+  "first_v_table": "../assets/first_v_gemma4_npu_full",
+  "media": {
+    "image": {"start": "<|image>", "end": "<image|>", "soft": "<|image|>", "handler": "kvrecon.media.image:recover"},
+    "audio": {"start": "<|audio>", "end": "<audio|>", "soft": "<|audio|>", "handler": "kvrecon.media.audio:recover"}
+  }
+}

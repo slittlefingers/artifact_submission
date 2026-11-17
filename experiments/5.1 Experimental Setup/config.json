@@ -1,0 +1,38 @@
+[
+  {
+    "name": "gemma",
+    "input": "assets/lime/5.1/gemma",
+    "model": "models/litertlm/gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+    "pid": 9862,
+    "va_bits": 39,
+    "start": 1,
+    "count": 15
+  },
+  {
+    "name": "qwen",
+    "input": "assets/lime/5.1/qwen",
+    "model": "models/litertlm/qwen3_5_2b_vl_spec_Google_Tensor_G5.litertlm",
+    "pid": 9862,
+    "va_bits": 39,
+    "start": 1,
+    "count": 18
+  },
+  {
+    "name": "llama",
+    "input": "assets/lime/5.1/llama",
+    "model": "models/litertlm/llama3_2_1b_Google_Tensor_G5.litertlm",
+    "pid": 9862,
+    "va_bits": 39,
+    "start": 0,
+    "count": 17
+  },
+  {
+    "name": "ministral",
+    "input": "assets/lime/5.1/ministral",
+    "model": "models/litertlm/ministral3_3b_vl_Google_Tensor_G5.litertlm",
+    "pid": 9862,
+    "va_bits": 39,
+    "start": 0,
+    "count": 10
+  }
+]

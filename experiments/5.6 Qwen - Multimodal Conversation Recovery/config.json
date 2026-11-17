@@ -1,0 +1,25 @@
+{
+  "backend": "npu",
+  "inspection": "reconstruction/configs/qwen3_5_2b_inspection.json",
+  "worker": "reconstruction/kvrecon/adapters/qwen_verify/qwen_verify_worker",
+  "image_worker": "reconstruction/components/image_reconstruction/native/qwen_image_worker",
+  "tokenizer": "models/derived/qwen3_5_2b/tokenizer.json",
+  "embeddings": "models/derived/qwen3_5_2b/embeddings.npy",
+  "observations": "assets/kv/5.6_qwen/observations",
+  "end_references": "assets/kv/5.6_qwen/image_end_references.npz",
+  "reference": "reconstruction/assets/kv_reference/qwen3_5_2b_layer3_sequential128",
+  "reconstructor": "models/qwen_layer3_kv_image",
+  "ridge": {
+    "max_anchors": 512,
+    "lambda_per_anchor": 0.01,
+    "score_chunk_size": 8192
+  },
+  "search_device": "cuda",
+  "patience": 2,
+  "output": "outputs/5.6_qwen",
+  "adb": "adb",
+  "serial": null,
+  "package": "com.example.annoymous",
+  "device_model": "/sdcard/Android/data/com.example.annoymous/files/qwen3_5_2b_vl_spec_Google_Tensor_G5.litertlm",
+  "independence_atol": 0.0001
+}

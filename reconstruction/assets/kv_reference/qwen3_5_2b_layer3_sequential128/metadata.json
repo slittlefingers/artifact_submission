@@ -1,0 +1,32 @@
+{
+  "identity": {
+    "layer_index": 3,
+    "reference_prefix_ids": [
+      248045,
+      846,
+      198
+    ],
+    "reference_position": 3,
+    "batch_signature": "prefill_128",
+    "vocab_size": 248320,
+    "quantization": [
+      {
+        "width": 512,
+        "scale": 1.0,
+        "zero_point": 0,
+        "dtype": "float32"
+      },
+      {
+        "width": 512,
+        "scale": 1.0,
+        "zero_point": 0,
+        "dtype": "float32"
+      }
+    ],
+    "qwen_recovery": true,
+    "qwen_query_mode": "exact_prefill",
+    "reference_construction": "sequential_prefill",
+    "reference_block_size": 128
+  },
+  "completed": 248320
+}

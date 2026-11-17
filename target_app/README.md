@@ -1,0 +1,3 @@
+```sh
+./gradlew assembleDebug assembleDebugAndroidTest
+```

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kvextract"
+version = "0.1.0"
+description = "Runtime-agnostic KV-cache recovery from Android on-device LLM memory dumps (Volatility3 plugin)"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["kvextract", "kvextract.locators"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,1243 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index 9d87a6bb..ca8c5b4c 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -3,13 +3,13 @@
+ workspace(name = "litert_lm")
+ 
+ # UPDATED = 2026-10-13
+-LITERT_REF = "9b8c7f77e7a29e6073e614a05e1e38be7b761229"
++LITERT_REF = "4352e261d3f1b3cda00345db5dbd75859d3bf0d3"
+ 
+-LITERT_SHA256 = "9f071b680abacb23650b15f67b2643453333ae367339b8af66f04bc36b9bc684"
++LITERT_SHA256 = "6e14131b5c8edeec6e8dbacf1b5cb46e2e94bd18d3e78cf995f18c3e103ef3f4"
+ 
+-TENSORFLOW_REF = "ff42e9551fb9d50d6d054d4bc42edc22d1bb80db"
++TENSORFLOW_REF = "5c0b7a5946f0f485e3a532b2a00e03f42a6e14c1"
+ 
+-TENSORFLOW_SHA256 = "4df29dd3368c86a28e68a01009b5cd2e9727c92f3b739606712512a7adde2470"
++TENSORFLOW_SHA256 = "7bf06cfd5ff9b462b1b25ca4dc3613fa5e3847fd8e291ff0a8de2ca5a812590a"
+ 
+ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+ 
+@@ -402,15 +402,7 @@ http_archive(
+     url = "https://static.crates.io/crates/cxxbridge-cmd/cxxbridge-cmd-1.0.149.crate",
+ )
+ 
+-crates_repository(
+-    name = "cxxbridge_cmd_deps",
+-    cargo_lockfile = "//cxxbridge_cmd:Cargo.lock",
+-    manifests = ["@cxxbridge_cmd//:Cargo.toml"],
+-)
+-
+-load("@cxxbridge_cmd_deps//:defs.bzl", cxxbridge_cmd_deps = "crate_repositories")
+-
+-cxxbridge_cmd_deps()
++# Windows: cxxbridge 1.0.149 built with Cargo.lock outside Bazel.
+ 
+ # Same one downloaded by tensorflow, but refer contrib/minizip.
+ http_archive(
+diff --git a/c/BUILD b/c/BUILD
+index bc374bcb..5d2b783c 100644
+--- a/c/BUILD
++++ b/c/BUILD
+@@ -499,6 +499,8 @@ cc_test(
+ cc_binary(
+     name = "litert-lm",
+     srcs = [
++        "build_provenance.cc",
++        "ghost_multimodal.cc",
+         "conversation.cc",
+         "embedding_engine.cc",
+         "engine.cc",
+@@ -537,6 +539,8 @@ cc_binary(
+     }),
+     linkshared = 1,
+     deps = ENGINE_COMMON_DEPS + [
++        "//runtime/conversation/model_data_processor:model_data_processor",
++        "//runtime/conversation/model_data_processor:model_data_processor_factory",
+         ":conversation_headers",
+         ":embedding_engine_headers",
+         ":engine_headers",
+diff --git a/c/build_provenance.cc b/c/build_provenance.cc
+new file mode 100644
+index 00000000..94df2324
+--- /dev/null
++++ b/c/build_provenance.cc
+@@ -0,0 +1,4 @@
++#include "c/api_export.h"
++extern "C" LITERT_LM_C_API_EXPORT const char* litert_lm_build_litert_revision() {
++  return "LiteRT v2.3.0; commit=4352e261d3f1b3cda00345db5dbd75859d3bf0d3; tensorflow=5c0b7a5946f0f485e3a532b2a00e03f42a6e14c1";
++}
+diff --git a/c/engine.cc b/c/engine.cc
+index 40119e74..dd15527f 100644
+--- a/c/engine.cc
++++ b/c/engine.cc
+@@ -985,6 +985,25 @@ LiteRtLmStatusCode litert_lm_engine_settings_set_activation_data_type(
+   return kLiteRtLmStatusOk;
+ }
+ 
++int litert_lm_engine_settings_set_npu_token_id_scrubbing(
++    LiteRtLmEngineSettings* settings, bool enabled) {
++  if (!settings || !settings->settings) {
++    litert::lm::c::SetLastError(absl::InvalidArgumentError(
++        "Invalid engine settings for NPU token-ID scrubbing."));
++    return -1;
++  }
++  auto& main_settings = settings->settings->GetMutableMainExecutorSettings();
++  auto config = main_settings.MutableBackendConfig<litert::lm::NpuConfig>();
++  if (!config.ok()) {
++    litert::lm::c::SetLastError(config.status());
++    return -1;
++  }
++  config->enable_token_id_scrubbing = enabled;
++  main_settings.SetBackendConfig(*config);
++  return 0;
++}
++
++
+ LiteRtLmStatusCode litert_lm_engine_settings_set_prefill_chunk_size(
+     LiteRtLmEngineSettings* settings, int prefill_chunk_size) {
+   if (!IsValidEngineSettings(settings)) {
+diff --git a/c/engine.h b/c/engine.h
+index bffe9d5e..dfb6ccb8 100644
+--- a/c/engine.h
++++ b/c/engine.h
+@@ -847,6 +847,19 @@ LITERT_LM_C_API_EXPORT
+ LiteRtLmStatusCode litert_lm_engine_settings_set_litert_dispatch_lib_dir(
+     LiteRtLmEngineSettings* settings, const char* lib_dir);
+ 
++// Enables token-ID scrubbing in the specialized and generic NPU executors.
++// Disabled by default. Set before creating the engine. True clears consumed
++// text IDs while preserving positions, the frontier/pending token and negative
++// multimodal sentinels; it also clears the processed-token array on reset and
++// context restore. This does not erase KV or token copies elsewhere in memory.
++// This covers processed-token vectors in either NPU execution path.
++// Returns 0 on success, -1 for invalid settings or a non-NPU backend; use
++// litert_lm_get_last_error_message() for details. This is a fork extension.
++LITERT_LM_C_API_EXPORT
++int litert_lm_engine_settings_set_npu_token_id_scrubbing(
++    LiteRtLmEngineSettings* settings, bool enabled);
++
++
+ // Represents the activation data type.
+ //
+ // Added in version 0.1.0.
+diff --git a/c/ghost_multimodal.cc b/c/ghost_multimodal.cc
+new file mode 100644
+index 00000000..098875cf
+--- /dev/null
++++ b/c/ghost_multimodal.cc
+@@ -0,0 +1,62 @@
++#include "c/engine.h"
++#include "c/engine_internal.h"
++#include "c/error_reporter_internal.h"
++#include "nlohmann/json.hpp"
++#include "runtime/conversation/model_data_processor/model_data_processor_factory.h"
++#include "runtime/conversation/model_data_processor/model_data_processor.h"
++#include "runtime/engine/engine.h"
++#include "runtime/engine/engine_settings.h"
++#include "runtime/engine/io_types.h"
++
++// App-specific C entry point: preprocess only this turn, then use the existing
++// Session. No Conversation, transcript list, checkpoints or prompt replay.
++extern "C" LITERT_LM_C_API_EXPORT LiteRtLmResponses*
++ghost_session_generate_multimodal(LiteRtLmEngine* engine, LiteRtLmSession* session,
++                                  const char* text, const char* image_path,
++                                  const char* audio_path) {
++  using namespace litert::lm;
++  auto error = [](const absl::Status& status) -> LiteRtLmResponses* {
++    litert::lm::c::SetLastError(status);
++    return nullptr;
++  };
++  if (!engine || !engine->engine || !session || !session->session || !text)
++    return error(absl::InvalidArgumentError("Invalid multimodal request."));
++  auto config = CreateDataProcessorConfigFromLlmModelType(
++      session->session->GetSessionConfig().GetLlmModelType());
++  if (!config.ok()) return error(config.status());
++  auto processor = CreateModelDataProcessor(*config, std::nullopt,
++      &engine->engine->GetTokenizer(),
++      session->session->GetSessionConfig().GetStopTokenIds(), false);
++  if (!processor.ok()) return error(processor.status());
++  auto content = nlohmann::ordered_json::array();
++  std::string prompt = "<|turn>user\n";
++  if (image_path && image_path[0]) {
++    content.push_back({{"type", "image"}, {"path", image_path}});
++    prompt += "\n\n<|image|>\n\n";
++  }
++  if (audio_path && audio_path[0]) {
++    content.push_back({{"type", "audio"}, {"path", audio_path}});
++    prompt += "<|audio|>";
++  }
++  content.push_back({{"type", "text"}, {"text", text}});
++  prompt += text;
++  prompt += "<turn|>\n<|turn>model\n";
++  auto messages = nlohmann::ordered_json::array();
++  messages.push_back({{"role", "user"}, {"content", std::move(content)}});
++  auto inputs = (*processor)->ToInputDataVector(prompt, messages, std::monostate{});
++  if (!inputs.ok()) return error(inputs.status());
++  auto response = session->session->GenerateContent(std::move(*inputs));
++  if (!response.ok()) return error(response.status());
++  return new LiteRtLmResponses{std::move(*response)};
++}
++
++extern "C" LITERT_LM_C_API_EXPORT LiteRtLmResponses*
++ghost_session_debug(LiteRtLmSession* session, const char* request) {
++  if(!session||!session->session) {
++    litert::lm::c::SetLastError(absl::InvalidArgumentError("No active session."));
++    return nullptr;
++  }
++  auto snapshot=session->session->GetGhostDebugJson(request);
++  if(!snapshot.ok()){litert::lm::c::SetLastError(snapshot.status());return nullptr;}
++  return new LiteRtLmResponses{litert::lm::Responses(litert::lm::TaskState::kDone, std::vector<std::string>{*snapshot})};
++}
+diff --git a/runtime/core/session_advanced.cc b/runtime/core/session_advanced.cc
+index ddc3d7b7..2dcf255b 100644
+--- a/runtime/core/session_advanced.cc
++++ b/runtime/core/session_advanced.cc
+@@ -612,6 +612,12 @@ absl::Status SessionAdvanced::RewindToStep(int step) {
+   return execution_manager_lock->SetCurrentStep(*session_info_, step);
+ }
+ 
++absl::StatusOr<std::string> SessionAdvanced::GetGhostDebugJson(const std::string& request) const {
++  auto manager=execution_manager_.lock();
++  if(!manager)return absl::FailedPreconditionError("Execution manager is unavailable.");
++  return manager->GetGhostDebugJson(*session_info_,request);
++}
++
+ absl::StatusOr<int> SessionAdvanced::GetCurrentStep() const {
+   auto execution_manager_lock = execution_manager_.lock();
+   if (execution_manager_lock == nullptr) {
+diff --git a/runtime/core/session_advanced.h b/runtime/core/session_advanced.h
+index 9340f63e..b6a3caff 100644
+--- a/runtime/core/session_advanced.h
++++ b/runtime/core/session_advanced.h
+@@ -187,6 +187,7 @@ class SessionAdvanced : public SessionInterface {
+   absl::Status RewindToStep(int step) override;
+ 
+   // Get the current step of the session.
++  absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const override;
+   absl::StatusOr<int> GetCurrentStep() const override;
+ 
+   // Cancels the ongoing inference process.
+diff --git a/runtime/engine/engine.h b/runtime/engine/engine.h
+index c1aa8551..e6ba8389 100644
+--- a/runtime/engine/engine.h
++++ b/runtime/engine/engine.h
+@@ -345,6 +345,10 @@ class SessionInterface {
+   }
+ 
+   // Get the current step of the session.
++  virtual absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const {
++    return absl::UnimplementedError("Debug inspection is unavailable for this backend.");
++  }
++
+   virtual absl::StatusOr<int> GetCurrentStep() const {
+     return absl::UnimplementedError("GetCurrentStep not implemented.");
+   }
+diff --git a/runtime/engine/litert_lm_advanced_main.cc b/runtime/engine/litert_lm_advanced_main.cc
+index ee3017c8..5c6f9ccd 100644
+--- a/runtime/engine/litert_lm_advanced_main.cc
++++ b/runtime/engine/litert_lm_advanced_main.cc
+@@ -344,6 +344,8 @@ absl::Status MainHelper(int argc, char** argv) {
+   settings.use_hw_cache_update_for_npu =
+       absl::GetFlag(FLAGS_use_hw_cache_update_for_npu);
+   settings.use_hw_ple_for_npu = absl::GetFlag(FLAGS_use_hw_ple_for_npu);
++  settings.enable_npu_token_id_scrubbing =
++      absl::GetFlag(FLAGS_enable_npu_token_id_scrubbing);
+   settings.enable_npu_debug_logging =
+       absl::GetFlag(FLAGS_enable_npu_debug_logging);
+   settings.disable_input_prompt_as_hint =
+diff --git a/runtime/engine/litert_lm_lib.cc b/runtime/engine/litert_lm_lib.cc
+index 232c770e..8682d034 100644
+--- a/runtime/engine/litert_lm_lib.cc
++++ b/runtime/engine/litert_lm_lib.cc
+@@ -764,6 +764,10 @@ absl::StatusOr<EngineSettings> CreateEngineSettings(
+     }
+     executor_settings.SetBackendConfig(gpu_artisan_settings);
+   }
++  if (settings.enable_npu_token_id_scrubbing && backend != Backend::NPU) {
++    return absl::InvalidArgumentError(
++        "NPU token-ID scrubbing requires the NPU backend.");
++  }
+   if (backend == Backend::NPU) {
+     auto& executor_settings = engine_settings.GetMutableMainExecutorSettings();
+     ABSL_ASSIGN_OR_RETURN(
+@@ -776,6 +780,8 @@ absl::StatusOr<EngineSettings> CreateEngineSettings(
+         settings.use_hw_cache_update_for_npu;
+     npu_settings.use_hw_ple_for_npu = settings.use_hw_ple_for_npu;
+     npu_settings.enable_npu_debug_logging = settings.enable_npu_debug_logging;
++    npu_settings.enable_token_id_scrubbing =
++        settings.enable_npu_token_id_scrubbing;
+     executor_settings.SetBackendConfig(npu_settings);
+   }
+   const std::optional<Backend> sampler_backend = GetSamplerBackend(settings);
+diff --git a/runtime/engine/litert_lm_lib.h b/runtime/engine/litert_lm_lib.h
+index 9b9f8e0f..443619a2 100644
+--- a/runtime/engine/litert_lm_lib.h
++++ b/runtime/engine/litert_lm_lib.h
+@@ -150,6 +150,7 @@ struct LiteRtLmSettings {
+   bool use_hw_ple_for_npu = true;
+   bool enable_npu_debug_logging = false;
+   bool disable_input_prompt_as_hint = false;
++  bool enable_npu_token_id_scrubbing = false;
+ };
+ 
+ struct LitertLmMetrics {
+diff --git a/runtime/engine/litert_lm_main.cc b/runtime/engine/litert_lm_main.cc
+index f6ecf6fe..a475842b 100644
+--- a/runtime/engine/litert_lm_main.cc
++++ b/runtime/engine/litert_lm_main.cc
+@@ -152,6 +152,18 @@ absl::Status MainHelper(int argc, char** argv) {
+     executor_settings.SetBackendConfig(cpu_settings);
+   }
+ 
++  if (absl::GetFlag(FLAGS_enable_npu_token_id_scrubbing)) {
++    if (backend != Backend::NPU) {
++      return absl::InvalidArgumentError(
++          "--enable_npu_token_id_scrubbing requires --backend=npu.");
++    }
++    auto& executor_settings = engine_settings.GetMutableMainExecutorSettings();
++    ABSL_ASSIGN_OR_RETURN(auto npu_settings,
++                         executor_settings.MutableBackendConfig<litert::lm::NpuConfig>());
++    npu_settings.enable_token_id_scrubbing = true;
++    executor_settings.SetBackendConfig(npu_settings);
++  }
++
+   // Create the engine.
+   ABSL_ASSIGN_OR_RETURN(auto engine, litert::lm::EngineFactory::CreateDefault(
+                                          std::move(engine_settings)));
+diff --git a/runtime/engine/shared_flags.cc b/runtime/engine/shared_flags.cc
+index a339a0ac..57d2f146 100644
+--- a/runtime/engine/shared_flags.cc
++++ b/runtime/engine/shared_flags.cc
+@@ -195,6 +195,11 @@ ABSL_FLAG(bool, use_hw_masking_for_npu, true,
+ ABSL_FLAG(bool, use_hw_cache_update_for_npu, true,
+           "If true, use HW cache update for NPU.");
+ ABSL_FLAG(bool, use_hw_ple_for_npu, true, "If true, use HW PLE for NPU.");
++ABSL_FLAG(bool, enable_npu_token_id_scrubbing, false,
++          "Opt in to clearing consumed token IDs and token storage on reset/"
++          "context restore in the specialized TF_LITE_AUX NPU executor. "
++          "Disabled by default; preserves the frontier and multimodal sentinels. "
++          "Does not erase all process memory or KV cache.");
+ ABSL_FLAG(bool, enable_npu_debug_logging, false,
+           "If true, enable debug logging for NPU.");
+ ABSL_FLAG(
+diff --git a/runtime/engine/shared_flags.h b/runtime/engine/shared_flags.h
+index c9679287..cef500fa 100644
+--- a/runtime/engine/shared_flags.h
++++ b/runtime/engine/shared_flags.h
+@@ -84,6 +84,7 @@ ABSL_DECLARE_FLAG(bool, use_hw_masking_for_npu);
+ ABSL_DECLARE_FLAG(bool, use_hw_cache_update_for_npu);
+ ABSL_DECLARE_FLAG(bool, use_hw_ple_for_npu);
+ ABSL_DECLARE_FLAG(bool, enable_npu_debug_logging);
++ABSL_DECLARE_FLAG(bool, enable_npu_token_id_scrubbing);
+ ABSL_DECLARE_FLAG(bool, disable_input_prompt_as_hint);
+ ABSL_DECLARE_FLAG(bool, gpu_enable_metal_residency_set);
+ 
+diff --git a/runtime/executor/BUILD b/runtime/executor/BUILD
+index fac0a9b1..38181b22 100644
+--- a/runtime/executor/BUILD
++++ b/runtime/executor/BUILD
+@@ -293,9 +293,10 @@ cc_test(
+ 
+ cc_library(
+     name = "llm_litert_compiled_model_executor",
+-    srcs = ["llm_litert_compiled_model_executor.cc"],
++    srcs = ["llm_litert_compiled_model_executor.cc", "ghost_compiled_model_debug.cc"],
+     hdrs = ["llm_litert_compiled_model_executor.h"],
+     deps = [
++        "@nlohmann_json//:json",
+         ":common_utils",
+         ":executor_settings_base",
+         ":executor_stats",
+@@ -579,6 +580,7 @@ cc_library(
+     srcs = ["llm_litert_npu_compiled_model_executor.cc"],
+     hdrs = ["llm_litert_npu_compiled_model_executor.h"],
+     deps = [
++        "@nlohmann_json//:json",
+         ":litert_compiled_model_executor_utils",
+         ":llm_executor",
+         ":llm_executor_io_types",
+diff --git a/runtime/executor/ghost_compiled_model_debug.cc b/runtime/executor/ghost_compiled_model_debug.cc
+new file mode 100644
+index 00000000..c778be67
+--- /dev/null
++++ b/runtime/executor/ghost_compiled_model_debug.cc
+@@ -0,0 +1,192 @@
++#include "runtime/executor/llm_litert_compiled_model_executor.h"
++#include <algorithm>
++#include <android/hardware_buffer.h>
++#include <memory>
++#include <optional>
++#include <chrono>
++#include <cerrno>
++#include <cstring>
++#include <map>
++#include <sstream>
++#include <unistd.h>
++#include "absl/strings/match.h"
++#include "absl/strings/numbers.h"
++#include "litert/cc/litert_macros.h"
++#include "runtime/executor/litert/state.h"
++#include "nlohmann/json.hpp"
++namespace litert::lm {
++namespace {
++// Wait without transferring the runtime event's borrowed fence FD to
++// AHardwareBuffer_lock, which takes ownership of that FD on this platform.
++// This keeps repeated debug mappings and unrelated Java-owned FDs independent.
++struct GhostReadLock {
++  const void* data=nullptr;
++  AHardwareBuffer* ahwb=nullptr;
++  std::optional<std::pair<litert::TensorBufferScopedLock,const void*>> ordinary;
++  ~GhostReadLock(){if(ahwb)AHardwareBuffer_unlock(ahwb,nullptr);}
++  static absl::StatusOr<std::unique_ptr<GhostReadLock>> Create(const litert::TensorBuffer& buffer){
++    auto result=std::make_unique<GhostReadLock>();
++    if(buffer.HasEvent()){
++      auto event=buffer.GetEvent();if(!event.HasValue())return absl::InternalError("Cannot read state completion event.");
++      auto waited=event->Wait(30000);if(!waited.HasValue())return absl::DeadlineExceededError("State buffer did not complete.");
++    }
++    auto hw=buffer.GetAhwb();
++    if(hw.HasValue()){
++      void* address=nullptr;
++      if(AHardwareBuffer_lock(*hw,AHARDWAREBUFFER_USAGE_CPU_READ_RARELY,-1,nullptr,&address)!=0)return absl::InternalError("Cannot map hardware state buffer.");
++      result->ahwb=*hw;result->data=address;
++    }else{
++      auto lock=litert::TensorBufferScopedLock::Create(buffer,litert::TensorBuffer::LockMode::kRead);
++      if(!lock.HasValue())return absl::InternalError("Cannot map state buffer.");
++      result->ordinary.emplace(std::move(*lock));result->data=result->ordinary->second;
++    }
++    return result;
++  }
++};
++}
++absl::StatusOr<std::string> LlmLiteRtCompiledModelExecutorBase::GetGhostDebugJson(const std::string& request) const {
++  using Json=nlohmann::ordered_json;
++  const auto query=Json::parse(request,nullptr,false);
++  if(query.is_discarded()||!query.is_object())return absl::InvalidArgumentError("Invalid debug request.");
++  const int selected_layer=query.value("layer",-1), selected_slot=query.value("slot",-1), fd=query.value("fd",-1);
++  const std::string format=query.value("format",std::string("inspect"));
++  const bool token_csv=format=="tokens_csv", kv_csv=format=="kv_csv", kv_raw=format=="kv_raw";
++  if(format!="inspect"&&format!="addresses"&&!token_csv&&!kv_csv&&!kv_raw)return absl::InvalidArgumentError("Unsupported export format.");
++  if((token_csv||kv_csv||kv_raw)&&fd<0)return absl::InvalidArgumentError("An export file is required.");
++  if(selected_layer<-1||selected_slot<-1)return absl::InvalidArgumentError("Invalid layer or slot.");
++  auto write_bytes=[&](const void* data,size_t size)->absl::Status {
++    const char* bytes=static_cast<const char*>(data);
++    while(size){ssize_t count=::write(fd,bytes,size);if(count<0&&errno==EINTR)continue;
++      if(count<=0)return absl::InternalError("Could not write the export file.");bytes+=count;size-=count;}
++    return absl::OkStatus();
++  };
++  auto address=[](const void* pointer){std::ostringstream out;out<<"0x"<<std::hex<<reinterpret_cast<uintptr_t>(pointer);return out.str();};
++  auto hex=[](const unsigned char* data,size_t size){std::string out;out.reserve(size*2);static const char digits[]="0123456789abcdef";
++    for(size_t i=0;i<size;++i){out.push_back(digits[data[i]>>4]);out.push_back(digits[data[i]&15]);}return out;};
++  const int current_step_ = llm_context_->runtime_state().current_step;
++  const auto views=llm_context_->processed_context().processed_tokens().GhostStorageViews();
++  const auto* state=dynamic_cast<const LitertState*>(state_.get());
++  if(!state)return absl::UnimplementedError("This state layout is not inspectable.");
++  if(format=="addresses"){
++    Json metadata={{"token_allocations",Json::array()},{"pending_addresses",Json::array()}};
++    for(size_t candidate=0;candidate<views.size();++candidate){
++      const auto& view=views[candidate];
++      metadata["token_allocations"].push_back({{"candidate",candidate},{"size",view.size},{"capacity",view.capacity},{"address",address(view.data)}});
++      if(view.pending_id)metadata["pending_addresses"].push_back({{"candidate",candidate},{"address",address(view.pending_id)}});
++    }
++    return metadata.dump();
++  }
++  const bool pending=!views.empty()&&views[0].pending_id;
++  const int valid=std::max(0,current_step_-(pending?1:0));
++  const int context_size=state->GetNumEntries();
++  const auto stamp=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
++  Json out={{"backend","NPU"},{"step",current_step_},{"kv_positions",valid},{"capture_ns",stamp},
++            {"context_size",context_size},{"ringbuffer",false},
++            {"source","Live process-owned memory; no retokenization or historical capture"}};
++  if(selected_layer<0&&!kv_csv&&!kv_raw){
++    out["tokens"]=Json::array();out["token_allocations"]=Json::array();
++    if(token_csv){const std::string header="capture_ns,candidate,index,region,address,byte_offset,id_int32,raw_hex_le\n";LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));}
++    for(size_t candidate=0;candidate<views.size();++candidate){
++      const auto& view=views[candidate];
++      out["token_allocations"].push_back({{"candidate",candidate},{"size",view.size},{"capacity",view.capacity},{"address",address(view.data)}});
++      for(size_t i=0;i<view.capacity+(view.pending_id?1:0);++i){
++        const bool is_pending=i==view.capacity;const size_t position=is_pending?view.size:i;
++        const auto* data=reinterpret_cast<const unsigned char*>(is_pending?view.pending_id:view.data+i);
++        int32_t id;std::memcpy(&id,data,sizeof(id));const std::string raw=hex(data,sizeof(id));
++        const std::string region=is_pending?"pending":(i<view.size?"live":"spare");
++        if(token_csv){std::string row=std::to_string(stamp)+","+std::to_string(candidate)+","+std::to_string(position)+","+region+","+address(data)+","+(is_pending?"":std::to_string(i*sizeof(int)))+","+std::to_string(id)+","+raw+"\n";LITERT_RETURN_IF_ERROR(write_bytes(row.data(),row.size()));}
++        else out["tokens"].push_back({{"candidate",candidate},{"index",position},{"region",region},{"address",address(data)},
++              {"byte_offset",is_pending?-1:static_cast<int64_t>(i*sizeof(int))},{"id",id},{"raw_hex",raw}});
++      }
++    }
++    if(token_csv)return Json({{"exported",true},{"format",format},{"capture_ns",stamp}}).dump();
++  }
++  struct BufferView {int layer;std::string name;const ::litert::TensorBuffer* buffer;Json meta;};
++  std::vector<BufferView> buffers;
++  std::map<int,Json> layers;
++  size_t payload_offset=0;
++  for(const auto& entry:state->GhostStateBuffers()){
++    const std::string name(entry.first);const auto suffix=name.rfind('_');int layer=-1;
++    if(suffix==std::string::npos||!absl::SimpleAtoi(name.substr(suffix+1),&layer))continue;
++    if(selected_layer>=0&&layer!=selected_layer)continue;
++    const auto& buffer=*entry.second;auto type=buffer.TensorType();auto packed=buffer.PackedSize();auto size=buffer.Size();auto offset=buffer.Offset();
++    if(!type.HasValue()||!packed.HasValue()||!size.HasValue()||!offset.HasValue())return absl::InternalError("Cache buffer metadata is unavailable.");
++    // Offset views need backend-specific allocation bounds; never guess/read out of range.
++    if(*offset!=0)return absl::UnimplementedError("Non-zero-offset KV views are not supported by this inspector.");
++    const auto dims=type->Layout().Dimensions();std::vector<size_t> strides(dims.size(),1);size_t elements=1;
++    for(int d=static_cast<int>(dims.size())-1;d>=0;--d){strides[d]=elements;if(dims[d]<=0)return absl::InternalError("Invalid KV dimensions.");elements*=dims[d];}
++    if(type->Layout().HasStrides()){auto declared=type->Layout().Strides();for(size_t d=0;d<dims.size();++d)strides[d]=declared[d];}
++    const size_t width=elements?*packed/elements:0;if(!width)return absl::InternalError("Invalid KV element width.");
++    const bool recurrent=absl::StartsWith(name,"kv_cache_r_");
++    const bool convolution=absl::StartsWith(name,"kv_cache_c_");
++    const bool linear=recurrent||convolution;
++    int axis=-1;
++    if(!linear){
++      if(dims.size()>2&&dims[2]==context_size)axis=2;
++      else if(dims.size()>3&&dims[3]==context_size)axis=3;
++    }
++    const bool local=false;
++    std::string dtype="raw";switch(type->ElementType()){
++      case litert::ElementType::Int8:dtype="int8";break;case litert::ElementType::UInt8:dtype="uint8";break;
++      case litert::ElementType::Int16:dtype="int16";break;case litert::ElementType::Int32:dtype="int32";break;
++      case litert::ElementType::Float16:dtype="float16";break;case litert::ElementType::Float32:dtype="float32";break;default:break;}
++    Json tensor={{"name",name},{"allocated_bytes",*size},{"packed_bytes",*packed},{"tensor_offset",*offset},
++        {"shape",Json::array()},{"strides",strides},{"element_bytes",width},{"dtype",dtype},
++        {"sequence_axis",axis},{"local",local},{"payload_offset",payload_offset}};
++    for(auto d:dims)tensor["shape"].push_back(d);payload_offset+=*size;
++    const int capacity=linear?elements/dims.back():(axis>=0&&axis<dims.size()?dims[axis]:0);
++    tensor["state_kind"]=recurrent?"recurrent":convolution?"convolution":"kv";
++    tensor["attention_type"]=linear?"linear":"full";
++    tensor["capacity"]=capacity;tensor["active_slots"]=linear?capacity:std::min(valid,capacity);
++    buffers.push_back({layer,name,&buffer,tensor});
++  }
++  std::sort(buffers.begin(),buffers.end(),[](const BufferView& a,const BufferView& b){return a.layer==b.layer?a.name<b.name:a.layer<b.layer;});
++  payload_offset=0;for(auto& buffer:buffers){buffer.meta["payload_offset"]=payload_offset;payload_offset+=buffer.meta["allocated_bytes"].get<size_t>();}
++  if(kv_raw){
++    Json manifest=out;manifest["format"]="GHOSTKV1";manifest["byte_order"]="little-endian";manifest["buffers"]=Json::array();
++    for(const auto& b:buffers){auto meta=b.meta;meta["layer"]=b.layer;manifest["buffers"].push_back(meta);}
++    const std::string header=manifest.dump();uint64_t length=header.size();unsigned char length_le[8];for(int i=0;i<8;++i)length_le[i]=(length>>(i*8))&255;
++    LITERT_RETURN_IF_ERROR(write_bytes("GHOSTKV1",8));LITERT_RETURN_IF_ERROR(write_bytes(length_le,8));LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));
++    for(const auto& b:buffers){auto lock=GhostReadLock::Create(*b.buffer);
++      if(!lock.ok())return lock.status();LITERT_RETURN_IF_ERROR(write_bytes((*lock)->data,b.meta["allocated_bytes"].get<size_t>()));}
++    return Json({{"exported",true},{"format",format},{"capture_ns",stamp},{"bytes",payload_offset+16+header.size()}}).dump();
++  }
++  if(kv_csv){std::string header="capture_ns,layer,buffer,dtype,shape,sequence_axis,slot,logical_position,active,address,first_byte_offset,raw_hex_le\n";LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));}
++  for(auto& b:buffers){
++    Json tensor=b.meta;const int axis=tensor["sequence_axis"],capacity=tensor["capacity"];const bool local=tensor["local"];
++    if((selected_layer>=0||kv_csv)&&capacity>0){
++      auto lock=GhostReadLock::Create(*b.buffer);
++      if(!lock.ok())return lock.status();
++      const auto* bytes=static_cast<const unsigned char*>((*lock)->data);tensor["address"]=address(bytes);
++      const auto dims=tensor["shape"].get<std::vector<size_t>>(), strides=tensor["strides"].get<std::vector<size_t>>();
++      const bool linear=tensor["attention_type"]=="linear";
++      const size_t width=tensor["element_bytes"],size=tensor["allocated_bytes"];size_t count=linear?dims.back():1;
++      if(!linear)for(size_t d=0;d<dims.size();++d)if(d!=axis)count*=dims[d];
++      tensor["samples"]=Json::array();
++      for(int slot=0;slot<capacity;++slot){
++        const bool active=linear||slot<std::min(valid,capacity);int position=linear?-1:slot;
++        if(local&&false&&valid>capacity){position=(valid/capacity)*capacity+slot;if(position>=valid)position-=capacity;}
++        std::string raw;bool zero=true;Json offsets=Json::array();const bool full=kv_csv||selected_slot==slot;const size_t wanted=full?count:std::min(count,static_cast<size_t>(16/width));
++        for(size_t component=0;component<wanted;++component){size_t flat=linear?slot*count+component:component,element=linear?0:slot*strides[axis];
++          for(int d=static_cast<int>(dims.size())-1;d>=0;--d)if(linear||d!=axis){element+=(flat%dims[d])*strides[d];flat/=dims[d];}
++          const size_t offset=element*width;if(offset+width>size)return absl::InternalError("KV layout exceeds mapped allocation.");
++          raw+=hex(bytes+offset,width);for(size_t i=0;i<width;++i)zero&=bytes[offset+i]==0;
++          if(!kv_csv&&selected_slot==slot)offsets.push_back(offset);
++        }
++        if(kv_csv){std::string shape;for(auto dim:dims){if(!shape.empty())shape+='x';shape+=std::to_string(dim);}
++          std::string row=std::to_string(stamp)+","+std::to_string(b.layer)+","+b.name+","+tensor["dtype"].get<std::string>()+","+shape+","+std::to_string(axis)+","+std::to_string(slot)+","+std::to_string(active?position:-1)+","+(active?"1":"0")+","+address(bytes)+","+std::to_string((linear?slot*count:slot*strides[axis])*width)+","+raw+"\n";LITERT_RETURN_IF_ERROR(write_bytes(row.data(),row.size()));}
++        else {Json cell={{"slot",slot},{"position",active?position:-1},{"active",active},{"hex",raw},{"sample_zero",zero},{"full",full},{"elements",wanted},{"byte_offset",(linear?slot*count:slot*strides[axis])*width}};
++          if(linear){
++            cell["label"]=tensor["state_kind"]=="recurrent"?"head "+std::to_string(slot/dims[dims.size()-2])+" / row "+std::to_string(slot%dims[dims.size()-2]):"channel "+std::to_string(slot);
++          }
++          if(full)cell["component_byte_offsets"]=std::move(offsets);tensor["samples"].push_back(std::move(cell));}
++      }
++    }
++    if(!layers.count(b.layer))layers[b.layer]={{"layer",b.layer},{"attention_type",tensor["attention_type"]},{"buffers",Json::array()}};
++    layers[b.layer]["buffers"].push_back(std::move(tensor));
++  }
++  if(kv_csv)return Json({{"exported",true},{"format",format},{"capture_ns",stamp}}).dump();
++  out["layers"]=Json::array();for(auto& layer:layers)out["layers"].push_back(std::move(layer.second));return out.dump();
++}
++
++}
+diff --git a/runtime/executor/litert/state.cc b/runtime/executor/litert/state.cc
+index 353a7e14..bcf0f074 100644
+--- a/runtime/executor/litert/state.cc
++++ b/runtime/executor/litert/state.cc
+@@ -494,7 +494,7 @@ absl::StatusOr<std::unique_ptr<LitertState>> LitertState::HeuristicBasedCreate(
+       key_cache_input_names.push_back(std::string(input_name));
+     }
+     if (absl::StartsWith(input_name, v_root_name) ||
+-        absl::StartsWith(input_name, "kv_cache_c_")) {
++        absl::StartsWith(input_name, "kv_cache_r_")) {
+       value_cache_input_names.push_back(std::string(input_name));
+     }
+     if (absl::StrContains(input_name, "mask")) {
+diff --git a/runtime/executor/litert/state.h b/runtime/executor/litert/state.h
+index 6006cc06..b6c93af8 100644
+--- a/runtime/executor/litert/state.h
++++ b/runtime/executor/litert/state.h
+@@ -19,6 +19,7 @@
+ #include <optional>
+ #include <string>
+ #include <utility>
++#include <vector>
+ 
+ #include "absl/container/flat_hash_map.h"  // from @com_google_absl
+ #include "absl/status/status.h"  // from @com_google_absl
+@@ -105,6 +106,15 @@ class LitertState : public StateInterface {
+     absl::flat_hash_map<absl::string_view, TensorBuffer> output_buffers;
+   };
+ 
++  // Debug reads must not advance the ping-pong bank or alter execution state.
++  std::vector<std::pair<std::string, const TensorBuffer*>> GhostStateBuffers() const {
++    const auto& bank = bank_2_state_buffers_ && !bank_1_is_input_
++                           ? *bank_2_state_buffers_ : bank_1_state_buffers_;
++    std::vector<std::pair<std::string, const TensorBuffer*>> result;
++    for (const auto& [name, state] : bank) result.emplace_back(name, &state.buffer);
++    return result;
++  }
++
+   // For backends that support inplace update, this returns a single set of
+   // state cache buffers that can be used for both input and output (i.e,
+   // input_buffers and output_buffers point to the same data).
+diff --git a/runtime/executor/llm_executor_base.h b/runtime/executor/llm_executor_base.h
+index 7380a004..0e1653b3 100644
+--- a/runtime/executor/llm_executor_base.h
++++ b/runtime/executor/llm_executor_base.h
+@@ -104,6 +104,10 @@ class LlmExecutorBase {
+   };
+ 
+   // Gets the current step of the executor.
++  virtual absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const {
++    return absl::UnimplementedError("Debug inspection is unavailable for this backend.");
++  }
++
+   virtual absl::StatusOr<int> GetCurrentStep() const {
+     return absl::UnimplementedError(absl::StrCat(
+         "GetCurrentStep not implemented for backend: ", ExecutorBackendName()));
+diff --git a/runtime/executor/llm_executor_processed_tokens.cc b/runtime/executor/llm_executor_processed_tokens.cc
+index 8958ab25..6dcabaea 100644
+--- a/runtime/executor/llm_executor_processed_tokens.cc
++++ b/runtime/executor/llm_executor_processed_tokens.cc
+@@ -14,6 +14,7 @@
+ 
+ #include "runtime/executor/llm_executor_processed_tokens.h"
+ 
++#include <algorithm>
+ #include <cstddef>
+ #include <memory>
+ #include <utility>
+@@ -28,6 +29,13 @@ namespace litert::lm {
+ // tokens_ must have at least one element.
+ ProcessedTokens::ProcessedTokens() : tokens_(1) {}
+ 
++std::vector<ProcessedTokens::GhostStorageView> ProcessedTokens::GhostStorageViews() const {
++  std::vector<GhostStorageView> views;
++  for(const auto& t:tokens_)views.push_back({t.token_ids.data(),t.token_ids.size(),
++      t.token_ids.capacity(),t.pending_input_token?t.pending_input_token->GhostIdAddress():nullptr});
++  return views;
++}
++
+ int ProcessedTokens::TokenCount() const {
+   return GetStep() + (HasPendingInputToken() ? 1 : 0);
+ }
+@@ -167,6 +175,36 @@ void ProcessedTokens::InvalidatePendingInputToken() {
+   }
+ }
+ 
++void ProcessedTokens::ScrubAll() {
++  for (auto& t : tokens_) {
++    // Zero the live [0, size) region AND the spare [size, capacity) region: a
++    // vector that was once longer keeps the older history's bytes in its spare
++    // capacity, which a plain fill over [begin, end) cannot reach. Grow to
++    // capacity (no realloc since size <= capacity), zero everything, then empty
++    // and release the buffer.
++    const size_t cap = t.token_ids.capacity();
++    t.token_ids.resize(cap);
++    std::fill(t.token_ids.begin(), t.token_ids.end(), 0);
++    t.token_ids.clear();
++    t.token_ids.shrink_to_fit();
++    t.pending_input_token = nullptr;
++  }
++}
++
++void ProcessedTokens::ScrubConsumedValues(int keep_from) {
++  for (auto& t : tokens_) {
++    const int n =
++        std::min<int>(keep_from, static_cast<int>(t.token_ids.size()));
++    for (int i = 0; i < n; ++i) {
++      // Preserve negative sentinel ids (e.g. vision/audio placeholders); the
++      // attention mask is built from them. Overwrite ordinary text tokens.
++      if (t.token_ids[i] >= 0) {
++        t.token_ids[i] = 0;
++      }
++    }
++  }
++}
++
+ int ProcessedTokens::GetStep() const { return tokens_[0].token_ids.size(); }
+ 
+ bool ProcessedTokens::HasPendingInputToken() const {
+diff --git a/runtime/executor/llm_executor_processed_tokens.h b/runtime/executor/llm_executor_processed_tokens.h
+index 0be420c2..82d2d7b4 100644
+--- a/runtime/executor/llm_executor_processed_tokens.h
++++ b/runtime/executor/llm_executor_processed_tokens.h
+@@ -37,6 +37,7 @@ class TokenData {
+         per_layer_embedding_(std::move(token_per_layer_embedding)) {}
+ 
+   int id() const { return id_; }
++  const int* GhostIdAddress() const { return &id_; }
+ 
+   absl::Span<const float> embedding() const { return embedding_; }
+   std::vector<float>& mutable_embedding() { return embedding_; }
+@@ -91,6 +92,15 @@ class ProcessedTokens {
+   // Returns the number of processed tokens inclusive of the pending input
+   // token, if any.
+   int TokenCount() const;
++  struct GhostStorageView {
++    const int* data;
++    size_t size;
++    size_t capacity;
++    const int* pending_id;
++  };
++  // Non-owning views, valid only while the owning executor is locked.
++  std::vector<GhostStorageView> GhostStorageViews() const;
++
+ 
+   // Reduces the token candidates to 1 with one of given index.
+   // It will be called when LLM switches from decode to prefill.
+@@ -140,6 +150,25 @@ class ProcessedTokens {
+   // Invalidates the pending input token, if any.
+   void InvalidatePendingInputToken();
+ 
++  // Privacy scrub: physically overwrites the plaintext token-id bytes of ALL
++  // candidates, including the vector's spare capacity (stale bytes left behind
++  // by a previously longer history), then empties it. Unlike RollBackToStep(0),
++  // which only resets the size and leaves the bytes resident in the heap
++  // allocation. This only covers this vector's storage, not token copies or
++  // other process allocations. Intended for Reset and context switch, where the
++  // final size is expected to be 0.
++  void ScrubAll();
++
++  // Live privacy scrub: overwrites the plaintext values of already-consumed
++  // token positions [0, keep_from) in-place with 0, for ALL candidates, while
++  // leaving the vector size (and therefore GetStep()/position accounting)
++  // unchanged. Negative sentinel ids (e.g. vision/audio placeholders) are
++  // preserved, since the attention mask depends on them. `keep_from` should be
++  // the frontier (current step - 1): the most recent token is kept because it
++  // is still read as the next step's seed. Unlike ScrubAll(), this does NOT
++  // empty the vector and is safe to call mid-session.
++  void ScrubConsumedValues(int keep_from);
++
+  private:
+   int GetStep() const;
+   bool HasPendingInputToken() const;
+diff --git a/runtime/executor/llm_executor_settings.cc b/runtime/executor/llm_executor_settings.cc
+index d30064a2..fa948a00 100644
+--- a/runtime/executor/llm_executor_settings.cc
++++ b/runtime/executor/llm_executor_settings.cc
+@@ -70,6 +70,8 @@ std::ostream& operator<<(std::ostream& os, const NpuConfig& config) {
+   os << "use_hw_masking_for_npu: " << config.use_hw_masking_for_npu << "\n";
+   os << "use_hw_cache_update_for_npu: " << config.use_hw_cache_update_for_npu
+      << "\n";
++  os << "enable_token_id_scrubbing: " << config.enable_token_id_scrubbing
++     << "\n";
+   os << "enable_npu_debug_logging: " << config.enable_npu_debug_logging << "\n";
+   return os;
+ }
+diff --git a/runtime/executor/llm_executor_settings.h b/runtime/executor/llm_executor_settings.h
+index b7c3523c..b868ba50 100644
+--- a/runtime/executor/llm_executor_settings.h
++++ b/runtime/executor/llm_executor_settings.h
+@@ -160,6 +160,13 @@ struct NpuConfig {
+ 
+   // Whether enable debug logging for NPU.
+   bool enable_npu_debug_logging = false;
++
++  // Opt-in clearing of consumed token IDs in the specialized TF_LITE_AUX
++  // executor. Defaults off to preserve the original token-history behavior.
++  // Keeps vector size, the frontier/pending token and multimodal sentinels;
++  // also clears this executor's processed-token array on reset/context restore.
++  // Does not erase KV, token copies elsewhere, or arbitrary process memory.
++  bool enable_token_id_scrubbing = false;
+ };
+ std::ostream& operator<<(std::ostream& os, const NpuConfig& config);
+ 
+diff --git a/runtime/executor/llm_litert_compiled_model_executor.cc b/runtime/executor/llm_litert_compiled_model_executor.cc
+index 2726539e..5e1aa754 100644
+--- a/runtime/executor/llm_litert_compiled_model_executor.cc
++++ b/runtime/executor/llm_litert_compiled_model_executor.cc
+@@ -1458,6 +1458,7 @@ LlmLiteRtCompiledModelExecutorBase::Decode(
+       llm_context_->processed_context().processed_tokens().AddPendingInputToken(
+           pending_tokens));
+ 
++  ScrubGhostConsumedTokens();
+   mtp_primed_ = enable_mtp_drafter;
+   return output_tokens_vector;
+ }
+@@ -1471,6 +1472,7 @@ absl::Status LlmLiteRtCompiledModelExecutorBase::Decode(
+   ABSL_RETURN_IF_ERROR(DecodeInternal(step_and_token.token, output_logits));
+   ABSL_RETURN_IF_ERROR(ConsumePendingOrAddProcessedToken(step_and_token.token));
+   ++llm_context_->runtime_state().current_step;
++  ScrubGhostConsumedTokens();
+   executor_stats_.AccumulateLogitsStep(absl::Now() - start);
+   return absl::OkStatus();
+ }
+@@ -1485,6 +1487,7 @@ absl::StatusOr<TensorBuffer> LlmLiteRtCompiledModelExecutorBase::DecodeLogits(
+   const absl::Time start = absl::Now();
+   ABSL_ASSIGN_OR_RETURN(auto output_logits,
+                         DecodeLogitsImpl(inputs, decode_params));
++  ScrubGhostConsumedTokens();
+   executor_stats_.AccumulateLogitsStep(absl::Now() - start);
+   return output_logits;
+ }
+@@ -1633,6 +1636,9 @@ LlmLiteRtCompiledModelExecutorBase::CloneContext() const {
+ 
+ absl::Status LlmLiteRtCompiledModelExecutorBase::RestoreContext(
+     std::unique_ptr<LlmContext> context_data) {
++  if (GhostScrubbingEnabled() && llm_context_) {
++    llm_context_->processed_context().processed_tokens().ScrubAll();
++  }
+   llm_context_ = std::move(context_data);
+   mtp_primed_ = false;
+ 
+@@ -1860,6 +1866,9 @@ absl::Status LlmLiteRtCompiledModelExecutorBase::SetCurrentStep(int new_step) {
+ }
+ 
+ absl::Status LlmLiteRtCompiledModelExecutorBase::Reset() {
++  if (GhostScrubbingEnabled()) {
++    llm_context_->processed_context().processed_tokens().ScrubAll();
++  }
+   llm_context_->runtime_state().current_step = 0;
+   mtp_primed_ = false;
+   return absl::OkStatus();
+@@ -1991,10 +2000,15 @@ absl::Status LlmLiteRtCompiledModelExecutorStatic::Prefill(
+ 
+     // TODO: b/494284915 - Switch to use async prefill for Metal backend.
+     if (!do_prefill_sync_.has_value()) {
+-      do_prefill_sync_ = std::any_of(
+-          prefill_input_buffers_[prefill_signature].begin(),
+-          prefill_input_buffers_[prefill_signature].end(),
+-          [](const auto& pair) { return pair.second.IsMetalMemory(); });
++      // NPU work groups reuse the same input and state buffers. Complete
++      // each invocation before filling these buffers for the next group.
++      do_prefill_sync_ =
++          executor_settings_.GetBackend() == Backend::NPU ||
++          std::any_of(prefill_input_buffers_[prefill_signature].begin(),
++                      prefill_input_buffers_[prefill_signature].end(),
++                      [](const auto& pair) {
++                        return pair.second.IsMetalMemory();
++                      });
+     }
+     bool async = !*do_prefill_sync_ &&
+                  (i < work_groups.size() - 1 || !params.GetWaitForCompletion());
+@@ -2004,6 +2018,7 @@ absl::Status LlmLiteRtCompiledModelExecutorStatic::Prefill(
+         ids.subspan(/*pos=*/0, prefill_length), async, &inputs));
+     ids = ids.subspan(/*pos=*/prefill_length);
+   }
++  ScrubGhostConsumedTokens();
+   RET_CHECK_EQ(ids.size(), 0).SetCode(absl::StatusCode::kInternal)
+       << "Work groups not covering the entire prefill input.";
+ 
+diff --git a/runtime/executor/llm_litert_compiled_model_executor.h b/runtime/executor/llm_litert_compiled_model_executor.h
+index f6b5ade9..edb58ee8 100644
+--- a/runtime/executor/llm_litert_compiled_model_executor.h
++++ b/runtime/executor/llm_litert_compiled_model_executor.h
+@@ -61,6 +61,25 @@ class LlmLiteRtCompiledModelExecutorBase : public LlmExecutor {
+  public:
+   using LlmExecutor::Prefill;
+ 
++  absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const override;
++  bool GhostScrubbingEnabled() const {
++    if (executor_settings_.GetBackend() != Backend::NPU) return false;
++    auto config = executor_settings_.GetBackendConfig<NpuConfig>();
++    return config.ok() && config->enable_token_id_scrubbing;
++  }
++  void ScrubGhostConsumedTokens() {
++    if (GhostScrubbingEnabled()) {
++      llm_context_->processed_context().processed_tokens().ScrubConsumedValues(
++          std::max(0, llm_context_->runtime_state().current_step - 1));
++    }
++  }
++  ~LlmLiteRtCompiledModelExecutorBase() override {
++    if (GhostScrubbingEnabled() && llm_context_) {
++      llm_context_->processed_context().processed_tokens().ScrubAll();
++    }
++  }
++
++
+   // Input APIs:
+   // Basic API to trigger the "prefill" or "prefix" process.
+   // Input is token ids with shape `[batch, sequence_length]`
+diff --git a/runtime/executor/llm_litert_compiled_model_executor_factory.cc b/runtime/executor/llm_litert_compiled_model_executor_factory.cc
+index 2c0cb72d..0c15953f 100644
+--- a/runtime/executor/llm_litert_compiled_model_executor_factory.cc
++++ b/runtime/executor/llm_litert_compiled_model_executor_factory.cc
+@@ -294,11 +294,11 @@ CreateNpuLlmLiteRtCompiledModelExecutor(LlmExecutorSettings executor_settings,
+ #else
+   auto aux_model_buffer = resources.GetTFLiteModelBuffer(ModelType::kTfLiteAux);
+   if (!aux_model_buffer.ok() || aux_model_buffer->empty()) {
++    ABSL_ASSIGN_OR_RETURN(auto npu_settings,
++                          executor_settings.MutableBackendConfig<NpuConfig>());
+     ABSL_LOG(WARNING)
+         << "NPU backend requested, but TF_LITE_AUX is not packaged in the "
+            "model. Using the generic LiteRT compiler-plugin path.";
+-    ABSL_ASSIGN_OR_RETURN(auto npu_settings,
+-                     executor_settings.MutableBackendConfig<NpuConfig>());
+     npu_settings.use_generic_litert_compiler_plugin = true;
+     executor_settings.SetBackendConfig(npu_settings);
+     return CreateCpuOrGpuLlmLiteRtCompiledModelExecutor(executor_settings,
+diff --git a/runtime/executor/llm_litert_npu_compiled_model_executor.cc b/runtime/executor/llm_litert_npu_compiled_model_executor.cc
+index 591e5d38..7ad9d41f 100644
+--- a/runtime/executor/llm_litert_npu_compiled_model_executor.cc
++++ b/runtime/executor/llm_litert_npu_compiled_model_executor.cc
+@@ -20,6 +20,13 @@
+ #include <cstdlib>
+ #include <cstring>
+ #include <memory>
++#include <map>
++#include <chrono>
++#include <cerrno>
++#include <cstring>
++#include <sstream>
++#include <unistd.h>
++#include "nlohmann/json.hpp"
+ #include <optional>
+ #include <string>
+ #include <utility>
+@@ -947,6 +954,11 @@ LlmLiteRtNpuCompiledModelExecutor::DecodeLogits(
+ 
+   current_step_++;
+   ran_decode_ = true;
++  // Privacy: wipe consumed token-id values, keeping the frontier token and
++  // preserving the vector size (position accounting is unaffected).
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++  }
+ 
+   return output_logits;
+ }
+@@ -1001,6 +1013,11 @@ LlmLiteRtNpuCompiledModelExecutor::DecodeNonSpeculative(
+         absl::ToInt64Microseconds(absl::Now() - start_sample);
+     ++current_step_;
+     ran_decode_ = true;
++    // Match DecodeLogits: wipe consumed history while preserving the frontier
++    // token and position accounting. The constrained path is scrubbed there.
++    if (npu_config_.enable_token_id_scrubbing) {
++      processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++    }
+   }
+ 
+   std::shared_ptr<TokenData> last_output_token =
+@@ -1049,6 +1066,10 @@ LlmLiteRtNpuCompiledModelExecutor::PopPendingAcceptedToken(
+   LITERT_RETURN_IF_ERROR(
+       processed_tokens_.AddPendingInputToken({std::move(next_token)}));
+   current_step_++;
++  // Privacy: wipe consumed token-id values, keeping the frontier token.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++  }
+   latency_stats_.decode_token_queue_latency_us +=
+       absl::ToInt64Microseconds(absl::Now() - start_queue);
+ 
+@@ -1244,6 +1265,10 @@ LlmLiteRtNpuCompiledModelExecutor::Decode(
+   LITERT_RETURN_IF_ERROR(
+       processed_tokens_.AddPendingInputToken({std::move(first_token)}));
+   current_step_++;
++  // Privacy: wipe consumed token-id values, keeping the frontier token.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++  }
+ 
+   latency_stats_.decode_num_tokens++;
+   latency_stats_.decode_e2e_latency_us +=
+@@ -1464,6 +1489,11 @@ absl::Status LlmLiteRtNpuCompiledModelExecutor::PrefillInternal(
+     processed_input_tokens.push_back(ids[i]);
+   }
+   processed_tokens_.AddProcessedTokens(processed_input_tokens);
++  // Privacy: wipe consumed token-id values from the accumulated history,
++  // keeping the frontier token and preserving the vector size.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++  }
+   if (!processed_input_tokens.empty()) {
+     NPU_EXECUTOR_LOG(INFO) << "Prefill tokens: "
+                            << FormatFirstN<int>(processed_input_tokens);
+@@ -1810,6 +1840,10 @@ absl::Status LlmLiteRtNpuCompiledModelExecutor::DecodeSingleToken(
+ 
+   LITERT_RETURN_IF_ERROR(DecodeInternal(step, token));
+   current_step_ = step + 1;
++  // Privacy: wipe consumed token-id values, keeping the frontier token.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubConsumedValues(current_step_ - 1);
++  }
+   return absl::OkStatus();
+ }
+ 
+@@ -2273,6 +2307,134 @@ absl::Status LlmLiteRtNpuCompiledModelExecutor::CommitVerifiedKVCache(
+       start_step, ActiveContextGroup().verify_aux_signatures.cache_update);
+ }
+ 
++
++absl::StatusOr<std::string> LlmLiteRtNpuCompiledModelExecutor::GetGhostDebugJson(const std::string& request) const {
++  using Json=nlohmann::ordered_json;
++  const auto query=Json::parse(request,nullptr,false);
++  if(query.is_discarded()||!query.is_object())return absl::InvalidArgumentError("Invalid debug request.");
++  const int selected_layer=query.value("layer",-1), selected_slot=query.value("slot",-1), fd=query.value("fd",-1);
++  const std::string format=query.value("format",std::string("inspect"));
++  const bool token_csv=format=="tokens_csv", kv_csv=format=="kv_csv", kv_raw=format=="kv_raw";
++  if(format!="inspect"&&format!="addresses"&&!token_csv&&!kv_csv&&!kv_raw)return absl::InvalidArgumentError("Unsupported export format.");
++  if((token_csv||kv_csv||kv_raw)&&fd<0)return absl::InvalidArgumentError("An export file is required.");
++  if(selected_layer<-1||selected_slot<-1)return absl::InvalidArgumentError("Invalid layer or slot.");
++  auto write_bytes=[&](const void* data,size_t size)->absl::Status {
++    const char* bytes=static_cast<const char*>(data);
++    while(size){ssize_t count=::write(fd,bytes,size);if(count<0&&errno==EINTR)continue;
++      if(count<=0)return absl::InternalError("Could not write the export file.");bytes+=count;size-=count;}
++    return absl::OkStatus();
++  };
++  auto address=[](const void* pointer){std::ostringstream out;out<<"0x"<<std::hex<<reinterpret_cast<uintptr_t>(pointer);return out.str();};
++  auto hex=[](const unsigned char* data,size_t size){std::string out;out.reserve(size*2);static const char digits[]="0123456789abcdef";
++    for(size_t i=0;i<size;++i){out.push_back(digits[data[i]>>4]);out.push_back(digits[data[i]&15]);}return out;};
++  const auto views=processed_tokens_.GhostStorageViews();
++  if(format=="addresses"){
++    Json metadata={{"token_allocations",Json::array()},{"pending_addresses",Json::array()}};
++    for(size_t candidate=0;candidate<views.size();++candidate){
++      const auto& view=views[candidate];
++      metadata["token_allocations"].push_back({{"candidate",candidate},{"size",view.size},{"capacity",view.capacity},{"address",address(view.data)}});
++      if(view.pending_id)metadata["pending_addresses"].push_back({{"candidate",candidate},{"address",address(view.pending_id)}});
++    }
++    return metadata.dump();
++  }
++  const bool pending=!views.empty()&&views[0].pending_id;
++  const int valid=std::max(0,current_step_-(pending?1:0));
++  const auto& group=ActiveContextGroup();
++  const auto stamp=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
++  Json out={{"backend","NPU"},{"step",current_step_},{"kv_positions",valid},{"capture_ns",stamp},
++            {"context_size",group.context_size},{"ringbuffer",group.geometry.uses_ringbuffer},
++            {"source","Live process-owned memory; no retokenization or historical capture"}};
++  if(selected_layer<0&&!kv_csv&&!kv_raw){
++    out["tokens"]=Json::array();out["token_allocations"]=Json::array();
++    if(token_csv){const std::string header="capture_ns,candidate,index,region,address,byte_offset,id_int32,raw_hex_le\n";LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));}
++    for(size_t candidate=0;candidate<views.size();++candidate){
++      const auto& view=views[candidate];
++      out["token_allocations"].push_back({{"candidate",candidate},{"size",view.size},{"capacity",view.capacity},{"address",address(view.data)}});
++      for(size_t i=0;i<view.capacity+(view.pending_id?1:0);++i){
++        const bool is_pending=i==view.capacity;const size_t position=is_pending?view.size:i;
++        const auto* data=reinterpret_cast<const unsigned char*>(is_pending?view.pending_id:view.data+i);
++        int32_t id;std::memcpy(&id,data,sizeof(id));const std::string raw=hex(data,sizeof(id));
++        const std::string region=is_pending?"pending":(i<view.size?"live":"spare");
++        if(token_csv){std::string row=std::to_string(stamp)+","+std::to_string(candidate)+","+std::to_string(position)+","+region+","+address(data)+","+(is_pending?"":std::to_string(i*sizeof(int)))+","+std::to_string(id)+","+raw+"\n";LITERT_RETURN_IF_ERROR(write_bytes(row.data(),row.size()));}
++        else out["tokens"].push_back({{"candidate",candidate},{"index",position},{"region",region},{"address",address(data)},
++              {"byte_offset",is_pending?-1:static_cast<int64_t>(i*sizeof(int))},{"id",id},{"raw_hex",raw}});
++      }
++    }
++    if(token_csv)return Json({{"exported",true},{"format",format},{"capture_ns",stamp}}).dump();
++  }
++  struct BufferView {int layer;std::string name;const ::litert::TensorBuffer* buffer;Json meta;};
++  std::vector<BufferView> buffers;
++  std::map<int,Json> layers;
++  size_t payload_offset=0;
++  for(const auto& entry:group.input_kv_cache_buffers){
++    const std::string name(entry.first);const auto suffix=name.rfind('_');int layer=-1;
++    if(suffix==std::string::npos||!absl::SimpleAtoi(name.substr(suffix+1),&layer))continue;
++    if(selected_layer>=0&&layer!=selected_layer)continue;
++    const auto& buffer=entry.second;auto type=buffer.TensorType();auto packed=buffer.PackedSize();auto size=buffer.Size();auto offset=buffer.Offset();
++    if(!type.HasValue()||!packed.HasValue()||!size.HasValue()||!offset.HasValue())return absl::InternalError("Cache buffer metadata is unavailable.");
++    // Offset views need backend-specific allocation bounds; never guess/read out of range.
++    if(*offset!=0)return absl::UnimplementedError("Non-zero-offset KV views are not supported by this inspector.");
++    const auto dims=type->Layout().Dimensions();std::vector<size_t> strides(dims.size(),1);size_t elements=1;
++    for(int d=static_cast<int>(dims.size())-1;d>=0;--d){strides[d]=elements;if(dims[d]<=0)return absl::InternalError("Invalid KV dimensions.");elements*=dims[d];}
++    if(type->Layout().HasStrides()){auto declared=type->Layout().Strides();for(size_t d=0;d<dims.size();++d)strides[d]=declared[d];}
++    const size_t width=elements?*packed/elements:0;if(!width)return absl::InternalError("Invalid KV element width.");
++    auto info=group.geometry.kv_buffer_info.find(name);int axis=info==group.geometry.kv_buffer_info.end()?-1:info->second.sequence_axis;
++    bool local=info!=group.geometry.kv_buffer_info.end()&&info->second.is_local;
++    std::string dtype="raw";switch(type->ElementType()){
++      case litert::ElementType::Int8:dtype="int8";break;case litert::ElementType::UInt8:dtype="uint8";break;
++      case litert::ElementType::Int16:dtype="int16";break;case litert::ElementType::Int32:dtype="int32";break;
++      case litert::ElementType::Float16:dtype="float16";break;case litert::ElementType::Float32:dtype="float32";break;default:break;}
++    Json tensor={{"name",name},{"allocated_bytes",*size},{"packed_bytes",*packed},{"tensor_offset",*offset},
++        {"shape",Json::array()},{"strides",strides},{"element_bytes",width},{"dtype",dtype},
++        {"sequence_axis",axis},{"local",local},{"payload_offset",payload_offset}};
++    for(auto d:dims)tensor["shape"].push_back(d);payload_offset+=*size;
++    const int capacity=axis>=0&&axis<dims.size()?dims[axis]:0;tensor["capacity"]=capacity;tensor["active_slots"]=std::min(valid,capacity);
++    buffers.push_back({layer,name,&buffer,tensor});
++  }
++  std::sort(buffers.begin(),buffers.end(),[](const BufferView& a,const BufferView& b){return a.layer==b.layer?a.name<b.name:a.layer<b.layer;});
++  payload_offset=0;for(auto& buffer:buffers){buffer.meta["payload_offset"]=payload_offset;payload_offset+=buffer.meta["allocated_bytes"].get<size_t>();}
++  if(kv_raw){
++    Json manifest=out;manifest["format"]="GHOSTKV1";manifest["byte_order"]="little-endian";manifest["buffers"]=Json::array();
++    for(const auto& b:buffers){auto meta=b.meta;meta["layer"]=b.layer;manifest["buffers"].push_back(meta);}
++    const std::string header=manifest.dump();uint64_t length=header.size();unsigned char length_le[8];for(int i=0;i<8;++i)length_le[i]=(length>>(i*8))&255;
++    LITERT_RETURN_IF_ERROR(write_bytes("GHOSTKV1",8));LITERT_RETURN_IF_ERROR(write_bytes(length_le,8));LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));
++    for(const auto& b:buffers){auto lock=::litert::TensorBufferScopedLock::Create(*b.buffer,::litert::TensorBuffer::LockMode::kRead);
++      if(!lock.HasValue())return absl::InternalError("KV buffer mapping failed.");LITERT_RETURN_IF_ERROR(write_bytes(lock->second,b.meta["allocated_bytes"].get<size_t>()));}
++    return Json({{"exported",true},{"format",format},{"capture_ns",stamp},{"bytes",payload_offset+16+header.size()}}).dump();
++  }
++  if(kv_csv){std::string header="capture_ns,layer,buffer,dtype,shape,sequence_axis,slot,logical_position,active,address,first_byte_offset,raw_hex_le\n";LITERT_RETURN_IF_ERROR(write_bytes(header.data(),header.size()));}
++  for(auto& b:buffers){
++    Json tensor=b.meta;const int axis=tensor["sequence_axis"],capacity=tensor["capacity"];const bool local=tensor["local"];
++    if((selected_layer>=0||kv_csv)&&capacity>0){
++      auto lock=::litert::TensorBufferScopedLock::Create(*b.buffer,::litert::TensorBuffer::LockMode::kRead);
++      if(!lock.HasValue())return absl::InternalError("KV buffer mapping failed.");
++      const auto* bytes=static_cast<const unsigned char*>(lock->second);tensor["address"]=address(bytes);
++      const auto dims=tensor["shape"].get<std::vector<size_t>>(), strides=tensor["strides"].get<std::vector<size_t>>();
++      const size_t width=tensor["element_bytes"],size=tensor["allocated_bytes"];size_t count=1;for(size_t d=0;d<dims.size();++d)if(d!=axis)count*=dims[d];
++      tensor["samples"]=Json::array();
++      for(int slot=0;slot<capacity;++slot){
++        const bool active=slot<std::min(valid,capacity);int position=slot;
++        if(local&&group.geometry.uses_ringbuffer&&valid>capacity){position=(valid/capacity)*capacity+slot;if(position>=valid)position-=capacity;}
++        std::string raw;bool zero=true;Json offsets=Json::array();const bool full=kv_csv||selected_slot==slot;const size_t wanted=full?count:std::min(count,static_cast<size_t>(16/width));
++        for(size_t component=0;component<wanted;++component){size_t flat=component,element=slot*strides[axis];
++          for(int d=static_cast<int>(dims.size())-1;d>=0;--d)if(d!=axis){element+=(flat%dims[d])*strides[d];flat/=dims[d];}
++          const size_t offset=element*width;if(offset+width>size)return absl::InternalError("KV layout exceeds mapped allocation.");
++          raw+=hex(bytes+offset,width);for(size_t i=0;i<width;++i)zero&=bytes[offset+i]==0;
++          if(!kv_csv&&selected_slot==slot)offsets.push_back(offset);
++        }
++        if(kv_csv){std::string shape;for(auto dim:dims){if(!shape.empty())shape+='x';shape+=std::to_string(dim);}
++          std::string row=std::to_string(stamp)+","+std::to_string(b.layer)+","+b.name+","+tensor["dtype"].get<std::string>()+","+shape+","+std::to_string(axis)+","+std::to_string(slot)+","+std::to_string(active?position:-1)+","+(active?"1":"0")+","+address(bytes)+","+std::to_string(slot*strides[axis]*width)+","+raw+"\n";LITERT_RETURN_IF_ERROR(write_bytes(row.data(),row.size()));}
++        else {Json cell={{"slot",slot},{"position",active?position:-1},{"active",active},{"hex",raw},{"sample_zero",zero},{"full",full},{"elements",wanted},{"byte_offset",slot*strides[axis]*width}};
++          if(full)cell["component_byte_offsets"]=std::move(offsets);tensor["samples"].push_back(std::move(cell));}
++      }
++    }
++    if(!layers.count(b.layer))layers[b.layer]={{"layer",b.layer},{"buffers",Json::array()}};
++    layers[b.layer]["buffers"].push_back(std::move(tensor));
++  }
++  if(kv_csv)return Json({{"exported",true},{"format",format},{"capture_ns",stamp}}).dump();
++  out["layers"]=Json::array();for(auto& layer:layers)out["layers"].push_back(std::move(layer.second));return out.dump();
++}
++
+ absl::Status LlmLiteRtNpuCompiledModelExecutor::SetCurrentStep(int new_step) {
+   const int max_step = processed_tokens_.TokenCount();
+   if (new_step != (max_step - 1)) {
+@@ -2329,6 +2491,12 @@ absl::Status LlmLiteRtNpuCompiledModelExecutor::Reset() {
+     }
+   }
+   LITERT_RETURN_IF_ERROR(processed_tokens_.RollBackToStep(0));
++  // Privacy: physically wipe the plaintext token-id bytes, symmetric to the
++  // ClearKVCache() calls below. RollBackToStep(0) only resets the size and
++  // leaves the token ids resident in the heap allocation.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubAll();
++  }
+   latency_stats_ = {};
+   last_verify_activations_.clear();
+   pending_accepted_tokens_.clear();
+@@ -2392,6 +2560,12 @@ LlmLiteRtNpuCompiledModelExecutor::CloneContext() const {
+ absl::Status LlmLiteRtNpuCompiledModelExecutor::RestoreContext(
+     std::unique_ptr<LlmContext> context_data) {
+   current_step_ = context_data->runtime_state().current_step;
++  // Privacy: wipe the outgoing session's token-id bytes before the copy-assign
++  // below reuses this vector's buffer, which would otherwise leave the previous
++  // session's tokens resident in the spare capacity of the reused allocation.
++  if (npu_config_.enable_token_id_scrubbing) {
++    processed_tokens_.ScrubAll();
++  }
+   processed_tokens_ = context_data->processed_context().processed_tokens();
+   if (context_data->runtime_config().sampler_params.has_value()) {
+     sampler_params_ = *context_data->runtime_config().sampler_params;
+diff --git a/runtime/executor/llm_litert_npu_compiled_model_executor.h b/runtime/executor/llm_litert_npu_compiled_model_executor.h
+index 28c0ed66..5354c599 100644
+--- a/runtime/executor/llm_litert_npu_compiled_model_executor.h
++++ b/runtime/executor/llm_litert_npu_compiled_model_executor.h
+@@ -148,6 +148,8 @@ class LlmLiteRtNpuCompiledModelExecutor : public LlmExecutor {
+   // Gets the current step of the executor.
+   // Public API, the return value is the current step that user expects (e.g.
+   // users prefill 100 tokens, then they expect the current step to be 100).
++  absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const override;
++
+   absl::StatusOr<int> GetCurrentStep() const override { return current_step_; }
+ 
+   absl::StatusOr<int> GetVocabSize() override;
+diff --git a/runtime/framework/resource_management/execution_manager.h b/runtime/framework/resource_management/execution_manager.h
+index 28d21045..d200c823 100644
+--- a/runtime/framework/resource_management/execution_manager.h
++++ b/runtime/framework/resource_management/execution_manager.h
+@@ -250,6 +250,11 @@ class ExecutionManager {
+   // - session_info: The session info of the session.
+   // Returns:
+   // - The current step of the session.
++  virtual absl::StatusOr<std::string> GetGhostDebugJson(
++      const SessionInfo& session_info, const std::string& request) {
++    return absl::UnimplementedError("Debug inspection is unavailable.");
++  }
++
+   virtual absl::StatusOr<int> GetCurrentStep(
+       const SessionInfo& session_info) = 0;
+ 
+diff --git a/runtime/framework/resource_management/resource_manager.cc b/runtime/framework/resource_management/resource_manager.cc
+index 7c50baad..b96e2653 100644
+--- a/runtime/framework/resource_management/resource_manager.cc
++++ b/runtime/framework/resource_management/resource_manager.cc
+@@ -432,6 +432,10 @@ class LockedLlmExecutor : public LlmExecutor {
+     return llm_executor_->UpdateExecutorSettings(executor_settings);
+   }
+ 
++  absl::StatusOr<std::string> GetGhostDebugJson(const std::string& request) const override {
++    return llm_executor_->GetGhostDebugJson(request);
++  }
++
+   absl::StatusOr<int> GetCurrentStep() const override {
+     return llm_executor_->GetCurrentStep();
+   }
+diff --git a/runtime/framework/resource_management/serial_execution_manager.cc b/runtime/framework/resource_management/serial_execution_manager.cc
+index 0174e186..9225c4a6 100644
+--- a/runtime/framework/resource_management/serial_execution_manager.cc
++++ b/runtime/framework/resource_management/serial_execution_manager.cc
+@@ -1144,6 +1144,13 @@ absl::Status SerialExecutionManager::AddTextScoringTask(
+                     cancelled, std::move(callback));
+ }
+ 
++absl::StatusOr<std::string> SerialExecutionManager::GetGhostDebugJson(
++    const SessionInfo& session_info, const std::string& request) {
++  ABSL_ASSIGN_OR_RETURN(auto executor,
++      resource_manager_->AcquireExecutorWithContextHandler(session_info.context_handler));
++  return executor->GetGhostDebugJson(request);
++}
++
+ absl::StatusOr<int> SerialExecutionManager::GetCurrentStep(
+     const SessionInfo& session_info) {
+   ABSL_ASSIGN_OR_RETURN(auto llm_executor,
+diff --git a/runtime/framework/resource_management/serial_execution_manager.h b/runtime/framework/resource_management/serial_execution_manager.h
+index 8bc5d614..1530b687 100644
+--- a/runtime/framework/resource_management/serial_execution_manager.h
++++ b/runtime/framework/resource_management/serial_execution_manager.h
+@@ -212,6 +212,9 @@ class SerialExecutionManager : public ExecutionManager {
+   // - session_info: The session info of the session.
+   // Returns:
+   // - The current step of the session.
++  absl::StatusOr<std::string> GetGhostDebugJson(
++      const SessionInfo& session_info, const std::string& request) override;
++
+   absl::StatusOr<int> GetCurrentStep(const SessionInfo& session_info) override;
+ 
+   // Sets the current step of the session to the target step.
+diff --git a/runtime/framework/resource_management/threaded_execution_manager.cc b/runtime/framework/resource_management/threaded_execution_manager.cc
+index 6d0ae329..51b66316 100644
+--- a/runtime/framework/resource_management/threaded_execution_manager.cc
++++ b/runtime/framework/resource_management/threaded_execution_manager.cc
+@@ -1292,6 +1292,13 @@ absl::Status ThreadedExecutionManager::AddTextScoringTask(
+                     cancelled, std::move(callback));
+ }
+ 
++absl::StatusOr<std::string> ThreadedExecutionManager::GetGhostDebugJson(
++    const SessionInfo& session_info, const std::string& request) {
++  ABSL_ASSIGN_OR_RETURN(auto executor,
++      resource_manager_->AcquireExecutorWithContextHandler(session_info.context_handler));
++  return executor->GetGhostDebugJson(request);
++}
++
+ absl::StatusOr<int> ThreadedExecutionManager::GetCurrentStep(
+     const SessionInfo& session_info) {
+   ABSL_ASSIGN_OR_RETURN(auto llm_executor,
+diff --git a/runtime/framework/resource_management/threaded_execution_manager.h b/runtime/framework/resource_management/threaded_execution_manager.h
+index 71adc9ae..6a2a3d73 100644
+--- a/runtime/framework/resource_management/threaded_execution_manager.h
++++ b/runtime/framework/resource_management/threaded_execution_manager.h
+@@ -231,6 +231,9 @@ class ThreadedExecutionManager : public ExecutionManager {
+   // - session_info: The session info of the session.
+   // Returns:
+   // - The current step of the session.
++  absl::StatusOr<std::string> GetGhostDebugJson(
++      const SessionInfo& session_info, const std::string& request) override;
++
+   absl::StatusOr<int> GetCurrentStep(const SessionInfo& session_info) override;
+ 
+   // Sets the current step of the session to the target step.

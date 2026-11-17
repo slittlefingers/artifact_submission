@@ -1,0 +1,194 @@
+--- a/litert/vendors/google_tensor/dispatch/BUILD
++++ b/litert/vendors/google_tensor/dispatch/BUILD
+@@ -138,7 +138,7 @@
+         ":google_tensor_hook",
+         "//litert/c:litert_profiler_types",
+         # copybara:uncomment "//litert/c/options/google:litert_google_tensor_privileged_options_type",
+-        "//litert/vendors/google_tensor/hooks",
++        # Internal profiling hooks are unavailable in OSS.
+         # copybara:uncomment "//litert/vendors/google_tensor/dispatch/google:google_tensor_privileged_options_utils",
+         "@com_google_absl//absl/algorithm:container",
+         "//litert/c/internal:litert_scheduling_info",
+--- a/third_party/arm/workspace.bzl
++++ b/third_party/arm/workspace.bzl
+@@ -10,7 +10,7 @@
+ def arm_deps():
+     http_archive(
+         name = "arm_dep_vulkan_headers",
+-        build_file = "@//third_party/arm:vulkan_headers.BUILD",
++        build_file = "@litert//third_party/arm:vulkan_headers.BUILD",
+         integrity = "sha256-17hHEvhGlle6o3pDbRoj778KY1T8iDW2dY7wNuFdzBQ=",
+         strip_prefix = "Vulkan-Headers-1.4.349",
+         urls = [
+@@ -29,9 +29,9 @@
+ 
+     http_archive(
+         name = "ai_ml_sdk_vgf_library",
+-        build_file = "@//third_party/arm:ai_ml_sdk_vgf_library.BUILD",
++        build_file = "@litert//third_party/arm:ai_ml_sdk_vgf_library.BUILD",
+         patch_args = ["-p0"],
+-        patches = ["@//third_party/arm:ai_ml_sdk_vgf_library.patch"],
++        patches = ["@litert//third_party/arm:ai_ml_sdk_vgf_library.patch"],
+         sha256 = "15edaaae0107ca7588dcb8966915075e71099705119241c03be0f2cba6a9a654",
+         strip_prefix = "ai-ml-sdk-vgf-library-0.9.0",
+         urls = [
+@@ -41,7 +41,7 @@
+ 
+     http_archive(
+         name = "tosa_for_spirv_codegen",
+-        build_file = "@//third_party/arm:tosa_for_spirv_codegen.BUILD",
++        build_file = "@litert//third_party/arm:tosa_for_spirv_codegen.BUILD",
+         sha256 = "7a222e03a38dfab4a09372a613a5be3895d33e5b92020fe6078e32e8d74fb0bf",
+         strip_prefix = "tosa-for-spirv-codegen-2.0.0",
+         urls = [
+--- a/third_party/exynos_ai_litecore/workspace.bzl
++++ b/third_party/exynos_ai_litecore/workspace.bzl
+@@ -17,7 +17,7 @@
+ def exynos_ai_litecore():
+     configurable_repo(
+         name = "exynos_ai_litecore",
+-        build_file = "@//third_party/exynos_ai_litecore:exynos_ai_litecore.BUILD",
++        build_file = "@litert//third_party/exynos_ai_litecore:exynos_ai_litecore.BUILD",
+         local_path_env = "EXYNOS_AI_LITECORE_ROOT",
+         strip_prefix = "exynos-ai-litecore-v1.2.0",
+         # TODO: Internal link (Not available). Please change to official link when release.
+--- a/third_party/google_tensor/workspace.bzl
++++ b/third_party/google_tensor/workspace.bzl
+@@ -19,6 +19,6 @@
+ def google_tensor():
+     configurable_repo(
+         name = "google_tensor",
+-        build_file = "@//third_party/google_tensor:google_tensor.BUILD",
++        build_file = "@litert//third_party/google_tensor:google_tensor.BUILD",
+         local_path_env = "GOOGLE_TENSOR_COMPILER_LIB",
+     )
+--- a/third_party/intel_openvino/openvino.bzl
++++ b/third_party/intel_openvino/openvino.bzl
+@@ -37,7 +37,7 @@
+     # openvino_version.bzl.
+     configurable_repo(
+         name = "intel_openvino",
+-        build_file = Label("@//third_party/intel_openvino:openvino.bazel"),
++        build_file = Label("@litert//third_party/intel_openvino:openvino.bazel"),
+         local_path_env = "OPENVINO_NATIVE_DIR",
+         packages = json.encode([
+             {
+--- a/third_party/jinja2/workspace.bzl
++++ b/third_party/jinja2/workspace.bzl
+@@ -5,7 +5,7 @@
+ def repo():
+     http_archive(
+         name = "jinja2",
+-        build_file = "@//third_party/jinja2:jinja2.BUILD",
++        build_file = "@litert//third_party/jinja2:jinja2.BUILD",
+         url = "https://github.com/pallets/jinja/archive/3.0.1.tar.gz",
+         strip_prefix = "jinja-3.0.1/src",
+         sha256 = "1e37a6f86c29fa8ace108ea72b41d2d5c5bd67d79be14bfeca3ba6eb37d789de",
+--- a/third_party/lark/workspace.bzl
++++ b/third_party/lark/workspace.bzl
+@@ -5,7 +5,7 @@
+ def repo():
+     http_archive(
+         name = "lark",
+-        build_file = "@//third_party/lark:lark.BUILD",
++        build_file = "@litert//third_party/lark:lark.BUILD",
+         add_prefix = "lark-1.3.1/lark",
+         urls = [
+             "https://github.com/lark-parser/lark/archive/refs/tags/1.3.1.tar.gz",
+--- a/third_party/litert_gpu/workspace.bzl
++++ b/third_party/litert_gpu/workspace.bzl
+@@ -19,7 +19,7 @@
+ def litert_gpu():
+     http_archive(
+         name = "litert_gpu",
+-        build_file = "@//third_party/litert_gpu:litert_gpu.BUILD",
++        build_file = "@litert//third_party/litert_gpu:litert_gpu.BUILD",
+         type = "jar",
+         url = "https://dl.google.com/android/maven2/com/google/ai/edge/litert/litert/2.1.1/litert-2.1.1.aar",
+     )
+--- a/third_party/litert_prebuilts/workspace.bzl
++++ b/third_party/litert_prebuilts/workspace.bzl
+@@ -19,7 +19,7 @@
+ def litert_prebuilts():
+     http_archive(
+         name = "litert_prebuilts",
+-        build_file = "@//third_party/litert_prebuilts:litert_prebuilts.BUILD",
++        build_file = "@litert//third_party/litert_prebuilts:litert_prebuilts.BUILD",
+         type = "zip",
+         url = "https://storage.googleapis.com/litert/binaries/latest/litert_prebuilts.zip",
+     )
+--- a/third_party/markupsafe/workspace.bzl
++++ b/third_party/markupsafe/workspace.bzl
+@@ -5,7 +5,7 @@
+ def repo():
+     http_archive(
+         name = "markupsafe",
+-        build_file = "@//third_party/markupsafe:markupsafe.BUILD",
++        build_file = "@litert//third_party/markupsafe:markupsafe.BUILD",
+         sha256 = "0f83b6d1bf6fa65546221d42715034e7e654845583a84906c5936590f9a7ad8f",
+         strip_prefix = "markupsafe-2.1.1/src/markupsafe",
+         urls = [
+--- a/third_party/models/workspace.bzl
++++ b/third_party/models/workspace.bzl
+@@ -19,7 +19,7 @@
+ def models():
+     configurable_repo(
+         name = "ats_models",
+-        build_file = "@//third_party/models:ats_models.BUILD",
++        build_file = "@litert//third_party/models:ats_models.BUILD",
+         local_path_env = "LITERT_ATS_MODELS",
+         url = "https://storage.googleapis.com/litert/ats_models.tar.gz",
+     )
+--- a/third_party/neuro_pilot/workspace.bzl
++++ b/third_party/neuro_pilot/workspace.bzl
+@@ -19,7 +19,7 @@
+ def neuro_pilot():
+     configurable_repo(
+         name = "neuro_pilot",
+-        build_file = "@//third_party/neuro_pilot:neuro_pilot.BUILD",
++        build_file = "@litert//third_party/neuro_pilot:neuro_pilot.BUILD",
+         local_path_env = "LITERT_NEURO_PILOT_SDK",
+         strip_prefix = "neuro_pilot",
+         url = "https://s3.ap-southeast-1.amazonaws.com/mediatek.neuropilot.com/66f2c33a-2005-4f0b-afef-2053c8654e4f.gz",
+--- a/third_party/qairt/workspace.bzl
++++ b/third_party/qairt/workspace.bzl
+@@ -20,7 +20,7 @@
+ def qairt():
+     configurable_repo(
+         name = "qairt",
+-        build_file = "@//third_party/qairt:qairt.BUILD",
++        build_file = "@litert//third_party/qairt:qairt.BUILD",
+         local_path_env = "LITERT_QAIRT_SDK",
+         strip_prefix = "qairt/2.50.0.260828",
+         url = "https://softwarecenter.qualcomm.com/api/download/software/sdks/Qualcomm_AI_Runtime_Community/All/2.50.0.260828/v2.50.0.260828.zip",
+--- a/third_party/stblib/workspace.bzl
++++ b/third_party/stblib/workspace.bzl
+@@ -7,5 +7,5 @@
+         name = "stblib",
+         remote = "https://github.com/nothings/stb",
+         commit = "c0c982601f40183e74d84a61237e968dca08380e",
+-        build_file = "@//third_party/stblib:stblib.BUILD",
++        build_file = "@litert//third_party/stblib:stblib.BUILD",
+     )
+--- a/third_party/tqdm/workspace.bzl
++++ b/third_party/tqdm/workspace.bzl
+@@ -5,7 +5,7 @@
+ def repo():
+     tf_http_archive(
+         name = "tqdm",
+-        build_file = "@//third_party/tqdm:tqdm.BUILD",
++        build_file = "@litert//third_party/tqdm:tqdm.BUILD",
+         sha256 = "e089e5207c36522f28178fe121220c29317afe2995355dda9c33aed1893c5fad",
+         strip_prefix = "tqdm-4.67.1",
+         urls = tf_mirror_urls(
+--- a/third_party/xdsl/workspace.bzl
++++ b/third_party/xdsl/workspace.bzl
+@@ -5,7 +5,7 @@
+ def repo():
+     http_archive(
+         name = "xdsl",
+-        build_file = "@//third_party/xdsl:xdsl.BUILD",
++        build_file = "@litert//third_party/xdsl:xdsl.BUILD",
+         strip_prefix = "xdsl-0.28.0/xdsl",
+         urls = [
+             "https://github.com/xdslproject/xdsl/archive/refs/tags/v0.28.0.tar.gz",

@@ -1,0 +1,17 @@
+{
+  "paper_section": "5.6 Qwen - Multimodal Conversation Recovery",
+  "source_directories": [
+    "reconstruction",
+    "reconstruction/kvrecon/adapters/qwen_verify",
+    "models/qwen_layer3_kv_image"
+  ],
+  "entry_points": [
+    "experiments/5.6 Qwen - Multimodal Conversation Recovery/run.py",
+    "experiments/5.6 Qwen - Multimodal Conversation Recovery/prepare.py"
+  ],
+  "datasets_and_checkpoints": "External assets; see ASSETS.md",
+  "status": "Implemented via shared reconstruct framework; offline tested and native compiled; live device end-to-end validation pending.",
+  "target_execution_backend": "NPU",
+  "historical_results_included": false,
+  "input_policy": "Use retained experimental KV assets or verified kvextract imports; preserve actual provenance."
+}

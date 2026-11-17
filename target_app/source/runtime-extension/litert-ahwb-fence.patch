@@ -1,0 +1,18 @@
+--- a/litert/runtime/ahwb_buffer.cc
++++ b/litert/runtime/ahwb_buffer.cc
+@@ -97,10 +97,13 @@
+     return Unexpected(kLiteRtStatusErrorRuntimeFailure,
+                       "AHardwareBuffers are not supported on this platform");
+   }
+-  int fence = -1;
++  // The event owns its fence descriptor. Do not hand that borrowed descriptor
++  // to the platform lock path, which can consume it on this device. Waiting
++  // first keeps ownership with the event until it is cleared by the runtime.
+   if (event != nullptr) {
+-    LITERT_ASSIGN_OR_RETURN(fence, event->GetSyncFenceFd());
++    LITERT_RETURN_IF_ERROR(event->Wait(-1));
+   }
++  const int fence = -1;
+   void* host_addr;
+   LITERT_RETURN_IF_ERROR(
+       AhwbWrapper().Lock(ahwb,

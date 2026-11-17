@@ -1,0 +1,105 @@
+[
+  {
+    "name": "hiertext_gemma_layer0",
+    "description": "Gemma layer-0 V, held-out HierText test split",
+    "cohort": "assets/kv/5.3/hiertext/gemma_layer0",
+    "checkpoint": "assets/model_gemma_image_layer0.zip",
+    "images": "assets/kv/5.3/hiertext/images",
+    "pixels": "assets/kv/5.3/hiertext/gemma_layer4",
+    "split": "test",
+    "paper": {
+      "preprocessed": {
+        "psnr": 16.613,
+        "ssim": 0.4635,
+        "mse": 0.024756
+      }
+    }
+  },
+  {
+    "name": "hiertext_gemma_layer4",
+    "description": "Gemma layer-4 K/V, held-out HierText test split",
+    "cohort": "assets/kv/5.3/hiertext/gemma_layer4",
+    "checkpoint": "assets/model_gemma_image_layer4.zip",
+    "images": "assets/kv/5.3/hiertext/images",
+    "split": "test"
+  },
+  {
+    "name": "hiertext_qwen_layer3",
+    "description": "Qwen layer-3 K/V, held-out HierText test split",
+    "cohort": "assets/kv/5.3/hiertext/qwen_layer3",
+    "checkpoint": "models/qwen_layer3_kv_image",
+    "images": "assets/kv/5.3/hiertext/images",
+    "split": "test"
+  },
+  {
+    "name": "vqav2_gemma_layer0",
+    "description": "Gemma layer-0 V, 100 VQAv2 images (cross-dataset)",
+    "cohort": "assets/kv/5.3/vqav2/gemma_layer0",
+    "checkpoint": "assets/model_gemma_image_layer0.zip",
+    "images": "assets/data_vqav2.zip"
+  },
+  {
+    "name": "vqav2_gemma_layer4",
+    "description": "Gemma layer-4 K/V, 100 VQAv2 images in independent NPU sessions",
+    "cohort": "assets/kv/5.3/vqav2/gemma_layer4",
+    "checkpoint": "assets/model_gemma_image_layer4.zip",
+    "images": "assets/data_vqav2.zip",
+    "paper": {
+      "preprocessed": {
+        "psnr": 16.49,
+        "ssim": 0.4376,
+        "mse": 0.024601
+      },
+      "source": {
+        "psnr": 16.47,
+        "ssim": 0.4328
+      }
+    }
+  },
+  {
+    "name": "vqav2_qwen_layer3",
+    "description": "Qwen layer-3 K/V, the same 100 VQAv2 images",
+    "cohort": "assets/kv/5.3/vqav2/qwen_layer3",
+    "checkpoint": "models/qwen_layer3_kv_image",
+    "images": "assets/data_vqav2.zip",
+    "paper": {
+      "preprocessed": {
+        "psnr": 14.32,
+        "ssim": 0.3977,
+        "mse": 0.039958
+      },
+      "source": {
+        "psnr": 14.3,
+        "ssim": 0.3927
+      }
+    }
+  },
+  {
+    "name": "photochat_gemma_layer4",
+    "description": "Gemma layer-4 K/V, 100 first-turn-image PhotoChat conversations",
+    "cohort": "assets/kv/5.3/photochat/gemma_layer4",
+    "checkpoint": "assets/model_gemma_image_layer4.zip",
+    "images": "assets/kv/5.3/photochat/images",
+    "paper": {
+      "source": {
+        "psnr": 15.93,
+        "ssim": 0.4324
+      }
+    },
+    "resize": "bicubic"
+  },
+  {
+    "name": "photochat_qwen_layer3",
+    "description": "Qwen layer-3 K/V, the same 100 PhotoChat conversations",
+    "cohort": "assets/kv/5.6_qwen/collection",
+    "checkpoint": "models/qwen_layer3_kv_image",
+    "images": "assets/kv/5.3/photochat/images",
+    "paper": {
+      "source": {
+        "psnr": 14.13,
+        "ssim": 0.391
+      }
+    },
+    "resize": "bicubic"
+  }
+]

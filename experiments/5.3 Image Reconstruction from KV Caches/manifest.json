@@ -1,0 +1,14 @@
+{
+  "paper_section": "5.3 Image Reconstruction from KV Caches",
+  "source_directories": [
+    "reconstruction/components/image_reconstruction",
+    "models/qwen_layer3_kv_image"
+  ],
+  "entry_points": [
+    "experiments/5.3 Image Reconstruction from KV Caches/run.py"
+  ],
+  "evaluations": "experiments/5.3 Image Reconstruction from KV Caches/evaluations.json",
+  "datasets_and_checkpoints": "assets/kv/5.3, assets/kv/5.6_qwen/collection, assets/data_vqav2.zip, assets/kv/5.3/photochat/images, assets/model_gemma_image_layer0.zip, assets/model_gemma_image_layer4.zip",
+  "status": "Runnable offline from the release archives; VQAv2 and PhotoChat paper values reproduced.",
+  "input_policy": "Recorded visual K/V only; original images are scoring targets and are hash-verified."
+}

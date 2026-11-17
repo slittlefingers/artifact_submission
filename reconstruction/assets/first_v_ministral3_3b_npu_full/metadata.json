@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "model": "ministral3_3b",
+  "backend": "npu",
+  "signature": "prefill_32",
+  "rows": 131072,
+  "vocabulary": 131072,
+  "full_vocabulary": true,
+  "v_sha256": "a5ac31dce466cbbd98d4a75fce6fcd934371b7ae349a8cdcb0ef9f14503cfa8c",
+  "ids_sha256": "2b70046d44d593203dd6d86f9cf53d03cfe9925fbdfdd2237ff6ccd9f8c09c3a",
+  "provenance": {
+    "model_sha256": "fdae6b2951a7049007e2a3bd763a10706a317fdefa6944d71d8df510c14dc8a8"
+  },
+  "layer": 0,
+  "dtype": "float32",
+  "scale": 1.0,
+  "zero_point": 0,
+  "execution": "Original graph; independent zero-cache batches at positions 0..batch-1; raw token IDs, no detokenization"
+}

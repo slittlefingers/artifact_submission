@@ -1,0 +1,36 @@
+[
+  {
+    "model": "Gemma 4 E2B",
+    "file": "gemma-4-E2B-it_Google_Tensor_G5.litertlm",
+    "bytes": 3113545589,
+    "sha256": "af1082986639ecde7db95d91be6fe54f8b6b458104734c5bafc204e69d6852dc"
+  },
+  {
+    "model": "Llama 3.2 1B",
+    "file": "llama3_2_1b_Google_Tensor_G5.litertlm",
+    "bytes": 3417066096,
+    "sha256": "4e2dd9e376fd290ff40d2da70921b9f433f55aa1353cba18f8cf740a971e0847",
+    "local_storage": "NTFS hard link to immutable source; uploads read full file bytes"
+  },
+  {
+    "model": "Ministral 3 3B",
+    "file": "ministral3_3b_vl_Google_Tensor_G5.litertlm",
+    "bytes": 10172280416,
+    "sha256": "fdae6b2951a7049007e2a3bd763a10706a317fdefa6944d71d8df510c14dc8a8",
+    "local_storage": "NTFS hard link to immutable source; uploads read full file bytes"
+  },
+  {
+    "model": "Qwen 3.5 2B VL (verify_64)",
+    "file": "qwen3_5_2b_vl_spec_Google_Tensor_G5.litertlm",
+    "bytes": 8737933232,
+    "sha256": "9ec3ff7dcc6218cdf9356d4e4a64bcbf4af0e23cb519ac7c058c22701721984f",
+    "signatures": [
+      "prefill_8",
+      "prefill_128",
+      "verify_64",
+      "commit_64",
+      "decode"
+    ],
+    "purpose": "Current Ghost Qwen model and NPU candidate replay (verify_64)"
+  }
+]

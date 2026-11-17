@@ -1,0 +1,46 @@
+{
+  "litert_lm_base_commit": "3981a9a8ce03cb8a44c5d6032ad7e5d6cef9d759",
+  "litert_base_version": "2.3.0",
+  "litert_base_commit": "4352e261d3f1b3cda00345db5dbd75859d3bf0d3",
+  "vendor_api": "0.21.0",
+  "native_libraries": {
+    "libannoymous.so": {
+      "bytes": 24600,
+      "sha256": "dc1a2b775e0945276aaab4476be9733120192c54499473088f6d978ea2304e79"
+    },
+    "libedgetpu_litert.so": {
+      "bytes": 6399408,
+      "sha256": "79ec48b6e54c0e97ab1687e448352df2bc2794fda5d13df9717e8a7c68b45e87"
+    },
+    "libGemmaModelConstraintProvider.so": {
+      "bytes": 19415656,
+      "sha256": "c7c7188b831ae75fcc7ec6fe613118365b311995805423a4ca265372f07f4783"
+    },
+    "liblitert-lm.so": {
+      "bytes": 24474032,
+      "sha256": "4353bb88907a5eea1fe713b3446af11ee3555105d99c687e1381c767c77b9584"
+    },
+    "libLiteRtDispatch_GoogleTensor.so": {
+      "bytes": 347680,
+      "sha256": "3b74becaff52604a43d23fb7555e12271496d473a7e35cb2d129b30c9b13dfac"
+    }
+  },
+  "local_changes": [
+    "Fixed 448x448 NCHW vision preprocessing and current-turn prompts for Qwen/Ministral",
+    "Compact selected NPU signatures; decode-only prefill for Phi",
+    "Exact prefill groups with decode remainder for linear recurrent states",
+    "Recover and validate file-backed mmap program ranges; share executable container handles",
+    "Scoped read/pread64 import compatibility for >MAX_RW_COUNT vendor reads",
+    "Existing token scrubbing, debug R/C and K/V, and AHWB fence lifecycle fixes retained"
+  ],
+  "source_patches": {
+    "litert-230-multimodel-full.patch": {
+      "bytes": 124328,
+      "sha256": "8a4e404661be63232c355e58150b635e9e592ef21dcd0e50f542d07245666c89"
+    },
+    "litertlm-230-multimodel-full.patch": {
+      "bytes": 78433,
+      "sha256": "148aeb4ca1d8e456b656ef9c12210786f2410c91110c25c4e8c94de25b9259f7"
+    }
+  }
+}

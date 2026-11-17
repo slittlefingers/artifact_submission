@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "model": "llama3_2_1b",
+  "backend": "npu",
+  "signature": "prefill_8",
+  "rows": 128256,
+  "vocabulary": 128256,
+  "full_vocabulary": true,
+  "v_sha256": "a207c8284e88f67094e4b513f188224258b15294ec434823d658704ed7761d91",
+  "ids_sha256": "7ae3c3447156f19d36df71dd40772530443000f5782181431e02223c5b773afd",
+  "provenance": {
+    "model_sha256": "4e2dd9e376fd290ff40d2da70921b9f433f55aa1353cba18f8cf740a971e0847"
+  },
+  "layer": 0,
+  "dtype": "float32",
+  "scale": 1.0,
+  "zero_point": 0,
+  "execution": "Original graph; independent zero-cache batches at positions 0..batch-1; raw token IDs, no detokenization"
+}
