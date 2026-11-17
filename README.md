@@ -1,4 +1,5 @@
-Run from the repository root. Download datasets and models from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission). Keep the downloaded `assets/` and `models/` folders in this repository root; extract `packages/*.zip` into the repository root. See `ASSETS.md`.
+Run from the repository root. Download datasets and models from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission). See [ASSETS.md](ASSETS.md) for every resource's destination, extraction commands, and phone model placement.
+
 ```sh
 python -m pip install -r requirements.txt
 # Tests: C++17 clang++/g++ on PATH, or a Visual Studio Developer Command Prompt.
