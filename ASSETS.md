@@ -1,6 +1,8 @@
 Download datasets and models from [Hugging Face](https://huggingface.co/datasets/Floooding/artifact_submission). Preserve the directory layout below:
 
 
+Place downloaded `assets/` and `models/` folders beside `kvidence.py`. Extract each `packages/*.zip` into this same root; the archives contain their destination paths. Keep `assets/*.zip` compressed.
+
 ```text
 assets/*.zip                   Dataset and Gemma reconstructor packages
 assets/kv/                     Recorded K/V and evaluation inputs
