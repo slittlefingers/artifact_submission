@@ -24,7 +24,7 @@ def reference_identity(job):
         reference_position=len(job['public_prefix_ids']),batch_signature=job['model']['batch_signature'],vocab_size=dims['vocab_size'],
         quantization=quantization(sections,job['model']['layer'],job['model']['batch_signature']))
     if job['device'].get('qwen_recovery'):
-        identity.update(qwen_recovery=True,qwen_query_mode=job['device'].get('qwen_query_mode','decode'))
+        identity.update(qwen_recovery=True,qwen_query_mode=job.get('reference',{}).get('query_mode',job['device'].get('qwen_query_mode','decode')))
     if job.get('reference',{}).get('construction')=='sequential_prefill':
         identity.update(reference_construction='sequential_prefill',reference_block_size=job['reference']['block_size'])
     return identity
@@ -34,6 +34,8 @@ def build_reference(config,output,resume=False,checkpoint_batches=16):
     from .job_config import load_job
     from .json_job import open_backend
     job=load_job(config);out=Path(output).resolve();identity=reference_identity(job)
+    if job['device'].get('qwen_recovery') and identity['qwen_query_mode']!=job['device'].get('qwen_query_mode','decode'):
+        raise ValueError('Build a reference using its declared query mode, not the candidate verification mode')
     if identity.get('reference_construction')=='sequential_prefill':
         raise ValueError('Sequential references require the dedicated causal-prefill builder')
     if out.exists() and not resume:raise FileExistsError('Use --resume to continue the existing table')

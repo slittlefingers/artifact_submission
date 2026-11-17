@@ -11,7 +11,12 @@ from .engine import reconstruct
 def open_backend(job,output):
     sections=json.loads(job['model']['manifest'].read_text(encoding='utf-8'))['model_sections']
     m=job['model'];d=job['device']
-    return NpuBackend(sections,m['layer'],output,m['sha256'],adb=d['adb'],serial=d['serial'],package=d['package'],device_model=m['device_model'],batch_signature=m['batch_signature'],mask_token_id=m['mask_token_id'],install=d.get('install',True),native_mode=d.get('native_mode','optimized_v2'),qwen_recovery=d.get('qwen_recovery',False),qwen_query_mode=d.get('qwen_query_mode','decode'))
+    backend=NpuBackend;extra={}
+    if d.get('qwen_recovery') and d.get('qwen_query_mode')=='verify':
+        from .npu_standalone import StandaloneNpuBackend
+        backend=StandaloneNpuBackend
+        extra['native_executable']=Path(__file__).parent/'adapters/qwen_verify/qwen_verify_worker'
+    return backend(sections,m['layer'],output,m['sha256'],adb=d['adb'],serial=d['serial'],package=d['package'],device_model=m['device_model'],batch_signature=m['batch_signature'],mask_token_id=m['mask_token_id'],install=d.get('install',True),native_mode=d.get('native_mode','optimized_v2'),qwen_recovery=d.get('qwen_recovery',False),qwen_query_mode=d.get('qwen_query_mode','decode'),**extra)
 
 class QueryLog:
     def __init__(self,backend,folder,positions,codes):
@@ -58,8 +63,12 @@ def run_job(path,limit=None,max_positions=None,output=None):
             from .media.pipeline import build_pipeline
             media_factory=build_pipeline(job['media'],backend,job['config_path'].parent)
         prefix=job['public_prefix_ids'];backend.reset(prefix);a=backend.query([0,1]);again=backend.query([0]);assert np.array_equal(a[0],again[0])
-        committed=backend.commit(0);assert np.array_equal(a[0],committed[0]);backend.reset(prefix);assert np.array_equal(a[0],backend.query([0])[0])
-        dump(output/'backend_validation.json',dict(repeat_exact=True,commit_exact=True,reset_exact=True))
+        committed=backend.commit(0);commit_exact=bool(np.array_equal(a[0],committed[0]))
+        if not backend.commit_revalidates_distance:assert commit_exact
+        if not np.isfinite(committed).all():raise ValueError('Nonfinite committed K/V')
+        backend.reset(prefix);assert np.array_equal(a[0],backend.query([0])[0])
+        dump(output/'backend_validation.json',dict(repeat_exact=True,commit_exact=commit_exact,reset_exact=True,
+             commit_revalidated_by_distance=backend.commit_revalidates_distance))
         for index,item in enumerate(rows):
             observation=(job['input_manifest'].parent/item['observation']).resolve()
             meta,codes,targets,positions,public=load_observation(observation,distance_space=job['search']['distance_space'])

@@ -67,7 +67,9 @@ def load_job(path):
             raise ValueError('Learned proposals require guided_kv or v_nearest without target-model probability seeds')
     if any(m in ('guided_kv','v_nearest','v_probability') for m in methods) and 'learned_candidates' not in data:
         ref=data.get('reference')
-        if not isinstance(ref,dict) or 'table' not in ref or set(ref)-{'table','device','construction','block_size'}:raise ValueError('Reference search requires reference.table')
+        if not isinstance(ref,dict) or 'table' not in ref or set(ref)-{'table','device','construction','block_size','query_mode'}:raise ValueError('Reference search requires reference.table')
+        if 'query_mode' in ref and ref['query_mode'] not in ('decode','exact_prefill','verify'):
+            raise ValueError('Unknown reference query mode')
         if ref.get('construction','independent') not in ('independent','sequential_prefill'):
             raise ValueError('Unknown reference construction')
         if ref.get('construction')=='sequential_prefill' and (type(ref.get('block_size')) is not int or ref['block_size']<1):
