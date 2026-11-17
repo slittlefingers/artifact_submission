@@ -59,6 +59,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(events[0]['token_ids'], [0, 1])
         marker_event = next(x for x in events if 22 in x['token_ids'])
         self.assertEqual(marker_event['phase'], 'neighborhood')
+        self.assertEqual(marker_event['token_ids'], [22, 23])
+        self.assertTrue(all(len(x['token_ids']) <= 2 for x in events if x['phase']=='neighborhood'))
         self.assertEqual(result['boundary_priority_ids'], [])
         self.assertEqual(result['accepted_token_id'], 22)
         self.assertEqual(result['accepted_distance'], 3)
@@ -69,7 +71,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(backend.history[-1], 22)                              
 
     def test_markers_reuse_seed_neighbor_and_previous_fallback_measurements(self):
-        backend, result, _ = recover(stagnation_token_ids=(1, 20, 22, 23))
+        backend = Backend()
+        backend.batch_capacity = 4
+        backend, result, _ = recover(backend, batch_size=4, stagnation_token_ids=(1, 20, 22, 23))
         first, second = result['neighborhood_checks']
         self.assertEqual(first['neighbors'], 2)
         self.assertEqual(first['verification_candidates'], 5)
@@ -86,7 +90,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(result['neighborhood_checks'], [])
 
     def test_incomplete_marker_union_cannot_claim_local_verification(self):
-        backend, result, _ = recover(max_queries=9)
+        backend, result, _ = recover(max_queries=7)
         self.assertIsNone(result['accepted_token_id'])
         self.assertEqual(result['stop_reason'], 'resource_budget_before_neighborhood')
         self.assertNotIn(22, backend.history)

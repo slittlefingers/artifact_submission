@@ -68,7 +68,8 @@ def build_search_config(tokenizer_path, variant='multimodal'):
         random_seeds=0,batch_size=128,merge_initial_batch=True,proposals=128,
         epsilon=30. if variant=='token_surrogate' else 2.,distance_space='lsb',
         retain_query_cache=True,ridge_stagnation_rounds=2,stagnation_neighbors=127,
-        max_queries=None,require_stagnation_for_acceptance=variant=='token_surrogate',
+        max_queries=None,media_aware_stopping=variant=='multimodal',
+        require_stagnation_for_acceptance=variant=='token_surrogate',
         boundary_token_ids=tuple(priority) if variant=='token_surrogate' else (),
         stagnation_token_ids=() if variant=='token_surrogate' else tuple(priority)).validate()
     if len(priority)+50>128:

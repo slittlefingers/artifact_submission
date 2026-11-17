@@ -271,8 +271,13 @@ def recover_position(backend, target, order, index, config, surrogate=None, cand
             neighbor_count=len(fixed)
                                                                           
                                                                            
-            fixed=np.asarray(list(dict.fromkeys(fixed.tolist()+fallback_ids)),dtype=np.int64)
-            chosen=fixed[available[fixed]].tolist()
+            markers=[t for t in fallback_ids if available[t]]
+            if len(markers)>config.batch_size:
+                raise ValueError('Unqueried public markers exceed the fallback batch capacity')
+            neighbors=[int(t) for t in fixed if available[t] and t not in fallback_ids]
+            chosen=markers+neighbors[:config.batch_size-len(markers)]
+            reused=list(dict.fromkeys(t for t in fallback_ids+fixed.tolist() if not available[t]))
+            fixed=np.asarray(chosen+reused,dtype=np.int64)
             if len(chosen)>remaining:
                 reason='resource_budget_before_neighborhood';break
             neighbor_checks.append(dict(center=center,neighbors=neighbor_count,
